@@ -25,7 +25,7 @@ public class CommentResponseDto {
                 .groupTitle(comment.getGroup().getTitle())
                 .userId(comment.getUser().getId())
                 .userName(comment.getUser().getName())
-                .createdAt(comment.getCreated_at())
+                .createdAt(comment.getCreatedAt())
                 .build();
     }
 }

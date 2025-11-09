@@ -3,6 +3,7 @@ package com.example.lionsforest.domain.group.service;
 import com.example.lionsforest.domain.group.Group;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
 import com.example.lionsforest.domain.group.repository.ParticipationRepository;
+import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.domain.user.User;
 import com.example.lionsforest.domain.group.Participation;
 import com.example.lionsforest.domain.group.dto.response.ParticipationResponseDto;
@@ -32,14 +33,14 @@ public class ParticipationService {
         if(participationRepository.existsByGroupAndUser(group, user)) {
             throw new IllegalArgumentException("이미 참여 신청한 모임입니다.");
         }
-
+/*
         // 인원 제한 체크
         long currentCount = participationRepository.countByGroupAndStatus(
                 group, ParticipationStatus.APPROVED);
         if(currentCount >= group.getCount()) {
             throw new IllegalArgumentException("모임 인원이 가득 찼습니다.");
         }
-
+*/
         Participation participation = Participation.builder()
                 .group(group)
                 .user(user)

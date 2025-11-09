@@ -16,8 +16,8 @@ public class GroupResponseDto {
     private Long id;
     private String title;
     private GroupCategory category;
-    private Integer count;
-    private LocalDateTime meeting_at;
+    private Integer capacity;
+    private LocalDateTime meetingAt;
     private String location;
     private GroupState state;
 
@@ -26,8 +26,8 @@ public class GroupResponseDto {
                 .id(group.getId())
                 .title(group.getTitle())
                 .category(group.getCategory())
-                .count(group.getCount())
-                .meeting_at(group.getMeeting_at())
+                .capacity(group.getCapacity())
+                .meetingAt(group.getMeetingAt())
                 .location(group.getLocation())
                 .state(group.getState())
                 .build();

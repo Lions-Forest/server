@@ -3,6 +3,7 @@ package com.example.lionsforest.domain.comment.service;
 import com.example.lionsforest.domain.comment.Comment;
 import com.example.lionsforest.domain.comment.dto.response.CommentResponseDto;
 import com.example.lionsforest.domain.comment.repository.CommentRepository;
+import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.domain.group.Group;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
 import com.example.lionsforest.domain.user.User;

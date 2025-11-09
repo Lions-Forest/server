@@ -27,7 +27,7 @@ public class ReviewController {
     public ResponseEntity<String> deleteReview(@PathVariable Long groupId,
                                                @RequestBody ReviewRequestDto dto){
         reviewService.deleteReview(groupId, dto.getUserId());
-        return ResponseEntity.ok("후기가 삭제 되었습니다.")
+        return ResponseEntity.ok("후기가 삭제 되었습니다.");
     }
 
     // 모임별 후기 조회

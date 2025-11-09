@@ -31,7 +31,7 @@ public class ReviewResponseDto {
                 .userName(review.getUser().getName())
                 .content(review.getContent())
                 .score(review.getScore())
-                .createdAt(review.getCreated_at())
+                .createdAt(review.getCreatedAt())
                 .build();
     }
 }

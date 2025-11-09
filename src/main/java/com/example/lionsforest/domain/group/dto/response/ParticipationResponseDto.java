@@ -26,7 +26,7 @@ public class ParticipationResponseDto {
                 .groupTitle(participation.getGroup().getTitle())
                 .userId(participation.getUser().getId())
                 .userName(participation.getUser().getName())
-                .createdAt(participation.getCreated_at())
+                .createdAt(participation.getCreatedAt())
                 .build();
     }
 
