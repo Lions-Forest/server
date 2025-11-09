@@ -5,12 +5,14 @@ import com.example.lionsforest.domain.group.Group;
 import com.example.lionsforest.domain.group.Participation;
 import com.example.lionsforest.domain.notification.Notification;
 import com.example.lionsforest.domain.radar.Radar;
+import com.example.lionsforest.domain.user.dto.UserInfoResponseDTO;
 import com.example.lionsforest.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -90,4 +92,18 @@ public class User extends BaseTimeEntity {
     @ManyToMany(mappedBy = "liked_users")
     private Set<User> liked_by_users = new HashSet<>();
 
+    //메서드
+    // 유저 프로필 수정
+    public void updateProfile(String nickname, String bio, String profile_photo) {
+        //null이 아닐 때만 필드 업데이트
+        if(nickname != null & nickname.isBlank()){
+            this.nickname = nickname;
+        }
+        if(bio != null & bio.isBlank()){
+            this.bio = bio;
+        }
+        if(profile_photo != null & profile_photo.isBlank()){
+            this.profile_photo = profile_photo;
+        }
+    }
 }
