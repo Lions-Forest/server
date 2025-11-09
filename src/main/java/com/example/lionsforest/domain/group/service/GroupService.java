@@ -24,8 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GroupService {
     private final GroupRepository groupRepository;
-    private final GroupPhotoRepository groupPhotoRepository; // (의존성 주입)
-    private final LocalUploadService s3UploadService; // 파일업로드
+    private final GroupPhotoRepository groupPhotoRepository;
+    private final LocalUploadService s3UploadService; // 파일업로드(지금은 우선 로컬로)
 
     // 모임 개설
     @Transactional
@@ -54,6 +54,7 @@ public class GroupService {
             }
             // GroupPhoto 리스트를 DB에 한 번에 저장 (Batch Insert)
             groupPhotoRepository.saveAll(groupPhotos);
+        }
 
         return new GroupResponseDto(saved.getId(),
                 saved.getTitle(), saved.getCategory(),
