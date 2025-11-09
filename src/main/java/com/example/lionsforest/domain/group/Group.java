@@ -69,4 +69,13 @@ public class Group extends BaseTimeEntity {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
+    public void update(String title, GroupCategory category, Integer count, LocalDateTime meeting_at, String location, GroupState state) {
+        this.title = title;
+        this.category = category;
+        this.count = count;
+        this.meeting_at = meeting_at;
+        this.location = location;
+        this.state = state;
+    }
+
 }

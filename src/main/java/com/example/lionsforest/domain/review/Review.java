@@ -1,6 +1,7 @@
 package com.example.lionsforest.domain.review;
 
 import com.example.lionsforest.domain.group.Group;
+import com.example.lionsforest.domain.user.User;
 import com.example.lionsforest.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,10 @@ public class Review extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="group_id", nullable = false)
     private Group group;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     private Integer score;
