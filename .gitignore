@@ -38,3 +38,4 @@ out/
 
 #Spring 설정 파일
 application.yml
+src/main/resources/application-secret.yml
