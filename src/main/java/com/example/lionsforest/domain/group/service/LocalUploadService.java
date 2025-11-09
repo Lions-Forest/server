@@ -47,4 +47,41 @@ public class LocalUploadService {
             throw new RuntimeException("로컬 파일 업로드 중 오류가 발생했습니다.", e);
         }
     }
+
+    /**
+     * [신규] 로컬 파일을 삭제하는 메서드
+     * @param fileUrl DB에 저장된 웹 경로 (예: /uploads/group-photos/uuid.jpg)
+     */
+    public void delete(String fileUrl) {
+        if (fileUrl == null || fileUrl.isBlank()) {
+            log.warn("삭제할 파일 URL이 비어있습니다.");
+            return;
+        }
+
+        try {
+            // 1. 웹 URL을 실제 파일 시스템 경로로 변환
+            //    (예: /uploads/group-photos/uuid.jpg -> ./uploads/group-photos/uuid.jpg)
+            String filePath = fileUrl.replaceFirst("/uploads/", uploadDir);
+
+            // 2. OS에 맞게 구분자(Separator) 변경 (예: / -> \)
+            filePath = filePath.replace("/", File.separator);
+
+            File fileToDelete = new File(filePath);
+
+            // 3. 파일이 존재하는지 확인
+            if (fileToDelete.exists()) {
+                // 4. 파일 삭제
+                if (fileToDelete.delete()) {
+                    log.info("로컬 파일 삭제 성공: {}", filePath);
+                } else {
+                    log.warn("로컬 파일 삭제 실패 (파일은 존재함): {}", filePath);
+                }
+            } else {
+                log.warn("삭제할 파일이 존재하지 않습니다: {}", filePath);
+            }
+        } catch (Exception e) {
+            // SecurityException 등 파일 접근 오류
+            log.error("로컬 파일 삭제 중 오류가 발생했습니다: {}", fileUrl, e);
+        }
+    }
 }

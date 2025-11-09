@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class GroupRequestDto {
+    private Long userId;
     private String title;
     private GroupCategory category;
     private Integer capacity;

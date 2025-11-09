@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 public class ParticipationResponseDto {
     private Long id;
     private Long groupId;
-    private String groupTitle;
     private Long userId;
     private String userName;
     private LocalDateTime createdAt;
@@ -23,7 +22,6 @@ public class ParticipationResponseDto {
         return ParticipationResponseDto.builder()
                 .id(participation.getId())
                 .groupId(participation.getGroup().getId())
-                .groupTitle(participation.getGroup().getTitle())
                 .userId(participation.getUser().getId())
                 .userName(participation.getUser().getName())
                 .createdAt(participation.getCreatedAt())

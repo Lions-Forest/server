@@ -19,28 +19,24 @@ import java.util.List;
 public class ParticipationService {
     private final ParticipationRepository participationRepository;
     private final GroupRepository groupRepository;
-    private final UserRepository userRepository;
 
     // 모임 참여
     @Transactional
-    public ParticipationResponseDto joinGroup(Long groupId, Long userId){
+    public ParticipationResponseDto joinGroup(Long groupId, User user){
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모임입니다."));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         // 중복 참여 체크
         if(participationRepository.existsByGroupAndUser(group, user)) {
             throw new IllegalArgumentException("이미 참여 신청한 모임입니다.");
         }
-/*
+
         // 인원 제한 체크
-        long currentCount = participationRepository.countByGroupAndStatus(
-                group, ParticipationStatus.APPROVED);
-        if(currentCount >= group.getCount()) {
+        long currentCount = participationRepository.countByGroupId(groupId);
+        if(currentCount >= group.getCapacity()) {
             throw new IllegalArgumentException("모임 인원이 가득 찼습니다.");
         }
-*/
+
         Participation participation = Participation.builder()
                 .group(group)
                 .user(user)
@@ -52,9 +48,9 @@ public class ParticipationService {
 
     // 모임 탈퇴
     @Transactional
-    public void leaveGroup(Long groupId, Long userId) {
+    public void leaveGroup(Long groupId, User user) {
         Participation participation = participationRepository
-                .findByGroupIdAndUserId(groupId, userId)
+                .findByGroupIdAndUserId(groupId, user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("참여하지 않은 모임입니다."));
 
         participationRepository.delete(participation);

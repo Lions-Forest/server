@@ -12,10 +12,9 @@ import java.util.Optional;
 public interface ParticipationRepository extends JpaRepository<Participation, Long> {
     boolean existsByGroupAndUser(Group group, User user);
 
-    //long countByGroupAndStatus(Group group, Participation);
+    long countByGroupId(Long groupId);
 
     Optional<Participation> findByGroupIdAndUserId(Long groupId, Long UserId);
 
     List<Participation> findByGroupId(Long groupId);
-    List<Participation> findByUserId(Long userId);
 }

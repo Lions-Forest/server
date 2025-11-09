@@ -4,11 +4,11 @@ import com.example.lionsforest.domain.comment.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    Optional<Comment> findByGroupIdAndUserId(Long groupId, Long userId);
 
+    // 모임별 댓글 조회
     List<Comment> findByGroupId(Long groupId);
+    // 유저별 댓글 조회
     List<Comment> findByUserId(Long userId);
 }

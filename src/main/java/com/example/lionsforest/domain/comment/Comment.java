@@ -20,7 +20,7 @@ import java.util.Set;
 public class Comment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long comment_id;
+    private Long commentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
@@ -32,8 +32,6 @@ public class Comment extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String content;
-
-    private Integer likes;
 
     //이 댓글을 좋아요한 유저
     @Builder.Default

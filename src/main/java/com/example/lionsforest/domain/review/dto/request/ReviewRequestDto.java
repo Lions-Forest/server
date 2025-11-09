@@ -4,5 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class ReviewRequestDto {
-    private Long userId;
+    private Integer score;
+    private String content;
 }

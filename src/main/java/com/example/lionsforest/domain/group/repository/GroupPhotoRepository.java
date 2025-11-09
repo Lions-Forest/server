@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface GroupPhotoRepository extends JpaRepository<GroupPhoto, Long> {
     List<GroupPhoto> findAllByGroup(Group group);
+    int countByGroupId(Long groupId);
 }
