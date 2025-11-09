@@ -1,14 +1,11 @@
 package com.example.lionsforest.domain.review.service;
 
-import com.example.lionsforest.domain.comment.Comment;
-import com.example.lionsforest.domain.comment.dto.response.CommentResponseDto;
 import com.example.lionsforest.domain.group.Group;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
 import com.example.lionsforest.domain.review.Review;
 import com.example.lionsforest.domain.review.dto.response.ReviewResponseDto;
 import com.example.lionsforest.domain.review.repository.ReviewRepository;
 import com.example.lionsforest.domain.user.User;
-import com.example.lionsforest.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
