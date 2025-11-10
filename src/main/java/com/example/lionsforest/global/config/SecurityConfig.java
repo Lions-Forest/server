@@ -1,6 +1,8 @@
 package com.example.lionsforest.global.config;
 
 
+import com.example.lionsforest.global.jwt.JwtAuthenticationFilter;
+import com.example.lionsforest.global.jwt.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,13 +10,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider) throws Exception {
         http
                 // 1. CSRF 비활성화
                 .csrf(AbstractHttpConfigurer::disable)
@@ -35,10 +38,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // "/auth/**" 경로는 인증 없이 무조건 통과(permitAll)
                         .requestMatchers("/auth/**").permitAll()
-
-                        // 추후 "/api/**" 등 다른 엔드포인트는 인증(JWT)이 필요하도록 설정
+                        //api 경로: 인증 되면 통과
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
-                );
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                        UsernamePasswordAuthenticationFilter.class);
 
         // 추후 JWT 필터 추가 필요
 
