@@ -42,6 +42,8 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	// @Valid 어노테이션을 위한 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// mysql jdbc 드라이버 의존성
+	runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 tasks.named('test') {
