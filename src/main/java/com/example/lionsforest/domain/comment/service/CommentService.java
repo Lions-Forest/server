@@ -6,6 +6,7 @@ import com.example.lionsforest.domain.comment.repository.CommentRepository;
 import com.example.lionsforest.domain.group.Group;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
 import com.example.lionsforest.domain.user.User;
+import com.example.lionsforest.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
