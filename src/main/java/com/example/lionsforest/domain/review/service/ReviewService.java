@@ -8,6 +8,7 @@ import com.example.lionsforest.domain.review.Review;
 import com.example.lionsforest.domain.review.dto.response.ReviewResponseDto;
 import com.example.lionsforest.domain.review.repository.ReviewRepository;
 import com.example.lionsforest.domain.user.User;
+import com.example.lionsforest.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,7 @@ public class ReviewService {
                 .user(user)
                 .build();
 
-        Review saved = ReviewRepository.save(review);
+        Review saved = reviewRepository.save(review);
         return ReviewResponseDto.fromEntity(saved);
     }
 

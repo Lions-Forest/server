@@ -7,6 +7,7 @@ import com.example.lionsforest.domain.user.User;
 import com.example.lionsforest.domain.group.Participation;
 import com.example.lionsforest.domain.group.dto.response.ParticipationResponseDto;
 
+import com.example.lionsforest.domain.user.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,11 +35,12 @@ public class ParticipationService {
         }
 
         // 인원 제한 체크
-        long currentCount = participationRepository.countByGroupAndStatus(
+        // ****EC2 배포 과정에서 오류가 떠서 일단 주석 처리합니다****
+        /* long currentCount = participationRepository.countByGroupAndStatus((
                 group, ParticipationStatus.APPROVED);
         if(currentCount >= group.getCount()) {
             throw new IllegalArgumentException("모임 인원이 가득 찼습니다.");
-        }
+        }*/
 
         Participation participation = Participation.builder()
                 .group(group)
