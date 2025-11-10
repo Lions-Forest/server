@@ -31,7 +31,7 @@ public class ReviewGetResponseDto {
                 .toList();
 
         return ReviewGetResponseDto.builder()
-                .id(review.getReview_id())
+                .id(review.getId())
                 .groupId(review.getGroup().getId())
                 .userId(review.getUser().getId())
                 .content(review.getContent())

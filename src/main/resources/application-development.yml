@@ -4,3 +4,14 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${database.username}
     password: ${database.password}
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    s3:
+      bucket: lions-forest
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
