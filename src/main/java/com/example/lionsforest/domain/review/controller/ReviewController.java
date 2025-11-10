@@ -50,16 +50,17 @@ public class ReviewController {
     @GetMapping("/{review_id}")
     public ResponseEntity<ReviewGetResponseDto> getReviewById(@PathVariable("review_id") Long reviewId){
         return ResponseEntity.ok(reviewService.getReviewById(reviewId));
+
     }
 
     // 모임별 후기 조회
-    @GetMapping("/{group_id}")
+    @GetMapping("/by-group/{group_id}")
     public ResponseEntity<List<ReviewGetResponseDto>> getReviewByGroupId(@PathVariable("group_id") Long groupId){
         return ResponseEntity.ok(reviewService.getReviewByGroupId(groupId));
     }
 
     // 특정 유저의 후기 전체 조회
-    @GetMapping("/{user_id}")
+    @GetMapping("/by-user/{user_id}")
     public ResponseEntity<List<ReviewGetResponseDto>> getReviewByUserId(@PathVariable("group_id") Long userId){
         return ResponseEntity.ok(reviewService.getReviewByUserId(userId));
     }

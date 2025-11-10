@@ -8,6 +8,7 @@ import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.domain.group.Participation;
 import com.example.lionsforest.domain.group.dto.response.ParticipationResponseDto;
 
+import com.example.lionsforest.domain.user.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

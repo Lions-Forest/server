@@ -2,7 +2,6 @@ package com.example.lionsforest.domain.review.service;
 
 import com.example.lionsforest.domain.group.Group;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
-import com.example.lionsforest.domain.group.service.LocalUploadService;
 import com.example.lionsforest.domain.review.Review;
 import com.example.lionsforest.domain.review.ReviewPhoto;
 import com.example.lionsforest.domain.review.dto.request.ReviewRequestDto;
@@ -14,6 +13,7 @@ import com.example.lionsforest.domain.review.repository.ReviewRepository;
 import com.example.lionsforest.domain.user.User;
 import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.global.common.S3UploadService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,6 +70,7 @@ public class ReviewService {
             // ReviewPhoto 리스트를 DB에 한 번에 저장 (Batch Insert)
             reviewPhotoRepository.saveAll(reviewPhotos);
         }
+
         return ReviewResponseDto.fromEntity(saved);
     }
 
