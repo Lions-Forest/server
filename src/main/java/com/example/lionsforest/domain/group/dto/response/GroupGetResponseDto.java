@@ -10,6 +10,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.List;
 
 @Getter
 @Builder
@@ -23,14 +24,14 @@ public class GroupGetResponseDto {
     private String location;
     private GroupState state;
 
-    private String thumbnailUrl;
+    private List<GroupPhotoDto> photos;
 
     public static GroupGetResponseDto fromEntity(Group group){
 
-        String thumbnailUrl = group.getPhotos().stream()
-                .min(Comparator.comparing(GroupPhoto::getPhoto_order)) // photo_order가 가장 낮은 (첫 번째) 사진
-                .map(GroupPhoto::getPhoto) // 사진의 URL을 가져옴
-                .orElse(null); // 사진이 없으면 null
+        List<GroupPhotoDto> photos = group.getPhotos().stream()
+                .sorted(Comparator.comparing(GroupPhoto::getPhoto_order))
+                .map(GroupPhotoDto::new)
+                .toList();
 
         return GroupGetResponseDto.builder()
                 .id(group.getId())
@@ -40,7 +41,7 @@ public class GroupGetResponseDto {
                 .meetingAt(group.getMeetingAt())
                 .location(group.getLocation())
                 .state(group.getState())
-                .thumbnailUrl(thumbnailUrl)
+                .photos(photos)
                 .build();
     }
 }

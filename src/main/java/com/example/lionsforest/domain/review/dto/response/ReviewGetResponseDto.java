@@ -1,18 +1,19 @@
 package com.example.lionsforest.domain.review.dto.response;
 
-import com.example.lionsforest.domain.comment.Comment;
-import com.example.lionsforest.domain.comment.dto.response.CommentResponseDto;
 import com.example.lionsforest.domain.review.Review;
+import com.example.lionsforest.domain.review.ReviewPhoto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 
 @Getter
 @Builder
 @AllArgsConstructor
-public class ReviewResponseDto {
+public class ReviewGetResponseDto {
     private Long id;
     private Long groupId;
     private Long userId;
@@ -20,14 +21,23 @@ public class ReviewResponseDto {
     private Integer score;
     private LocalDateTime createdAt;
 
-    public static ReviewResponseDto fromEntity(Review review){
-        return ReviewResponseDto.builder()
+    private List<ReviewPhotoDto> photos;
+
+    public static ReviewGetResponseDto fromEntity(Review review){
+
+        List<ReviewPhotoDto> photos = review.getPhotos().stream()
+                .sorted(Comparator.comparing(ReviewPhoto::getPhoto_order))
+                .map(ReviewPhotoDto::new)
+                .toList();
+
+        return ReviewGetResponseDto.builder()
                 .id(review.getReview_id())
                 .groupId(review.getGroup().getId())
                 .userId(review.getUser().getId())
                 .content(review.getContent())
                 .score(review.getScore())
                 .createdAt(review.getCreatedAt())
+                .photos(photos)
                 .build();
     }
 }

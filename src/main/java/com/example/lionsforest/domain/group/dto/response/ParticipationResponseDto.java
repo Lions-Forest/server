@@ -1,7 +1,6 @@
 package com.example.lionsforest.domain.group.dto.response;
 
 import com.example.lionsforest.domain.group.Participation;
-import com.example.lionsforest.domain.group.dto.request.ParticipationRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

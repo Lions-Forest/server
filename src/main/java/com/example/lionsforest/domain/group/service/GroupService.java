@@ -2,7 +2,6 @@ package com.example.lionsforest.domain.group.service;
 
 import com.example.lionsforest.domain.group.Group;
 import com.example.lionsforest.domain.group.dto.request.GroupRequestDto;
-import com.example.lionsforest.domain.group.dto.response.GroupGetDetailResponseDto;
 import com.example.lionsforest.domain.group.dto.response.GroupGetResponseDto;
 import com.example.lionsforest.domain.group.dto.response.GroupResponseDto;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
@@ -12,6 +11,8 @@ import com.example.lionsforest.domain.group.repository.GroupPhotoRepository;
 import com.example.lionsforest.domain.user.User;
 
 
+import com.example.lionsforest.domain.user.repository.UserRepository;
+import com.example.lionsforest.global.common.S3UploadService;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,17 @@ import java.util.stream.Collectors;
 public class GroupService {
     private final GroupRepository groupRepository;
     private final GroupPhotoRepository groupPhotoRepository;
-    private final LocalUploadService s3UploadService; // 파일업로드(지금은 우선 로컬로)
+    private final UserRepository userRepository;
+    private final S3UploadService s3UploadService;
 
     // 모임 개설
     @Transactional
     public GroupResponseDto createGroup(GroupRequestDto dto,
                                         List<MultipartFile> photos,
-                                        User user){
+                                        Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
         // Group Entity 먼저 생성(ID 확보)
         Group group = dto.toEntity(user);
         Group saved = groupRepository.save(group);
@@ -42,8 +47,8 @@ public class GroupService {
             for (int i = 0; i < photos.size(); i++) {
                 MultipartFile photo = photos.get(i);
 
-                // S3(또는 로컬)에 파일 업로드 -> URL 반환
-                String photoUrl = s3UploadService.upload(photo, "s3폴더경로");
+                // S3에 파일 업로드 -> URL 반환
+                String photoUrl = s3UploadService.upload(photo, "group-photos");
                 // GroupPhoto 엔티티 생성
                 GroupPhoto groupPhoto = GroupPhoto.builder()
                         .group(saved)        // 저장된 Group 객체
@@ -63,7 +68,7 @@ public class GroupService {
                 saved.getLocation(), saved.getState());
     }
 
-    // 모임 정보 전체 조회(썸네일 포함)
+    // 모임 정보 전체 조회
     @Transactional(readOnly = true)
     public List<GroupGetResponseDto> getAllGroup(){
         return groupRepository.findAll().stream()
@@ -74,21 +79,25 @@ public class GroupService {
 
     // 모임 정보 상세 조회
     @Transactional(readOnly = true)
-    public GroupGetDetailResponseDto getGroupById(Long id) {
+    public GroupGetResponseDto getGroupById(Long groupId) {
 
-        Group group = groupRepository.findByIdWithPhotos(id)
+        Group group = groupRepository.findByIdWithPhotos(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
 
-        return GroupGetDetailResponseDto.fromEntity(group);
+        return GroupGetResponseDto.fromEntity(group);
     }
 
     // 모임 수정
     @Transactional
-    public GroupResponseDto updateGroup(Long groupId, GroupUpdateRequestDto dto, User user){
+    public GroupResponseDto updateGroup(Long groupId, GroupUpdateRequestDto dto, Long userId){
 
         // 모임 조회
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모임입니다."));
+
+        // 유저 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
         // 유저 권한 확인
         if(!group.getLeader().getId().equals(user.getId())){
@@ -119,21 +128,30 @@ public class GroupService {
 
     // 모임 삭제
     @Transactional
-    public void deleteGroup(Long groupId, User user){
+    public void deleteGroup(Long groupId, Long userId){
         // 모임 조회
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모임입니다."));
+
+        // 유저 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
         // 유저 권한 확인
         if(!group.getLeader().getId().equals(user.getId())){
             throw new IllegalArgumentException("모임장만 모임을 수정할 수 있습니다.");
         }
 
+        // 사진 삭제
+        if (group.getPhotos() != null) {
+            group.getPhotos().forEach(p -> s3UploadService.delete(p.getPhoto()));
+        }
+
         //삭제
         groupRepository.delete(group);
     }
 
-
+    /*
     //사진 일괄 관리 (추가 + 삭제)
     @Transactional
     public void managePhotos(Long groupId, List<MultipartFile> addPhotos, List<Long> deletePhotoIds, User user) {
@@ -185,5 +203,6 @@ public class GroupService {
             groupPhotoRepository.saveAll(groupPhotos);
         }
     }
+    */
 
 }

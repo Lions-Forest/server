@@ -24,9 +24,12 @@ public class CommentService {
 
     // 댓글 생성
     @Transactional
-    public CommentResponseDto createComment(Long groupId, CommentRequestDto dto, User user){
+    public CommentResponseDto createComment(Long groupId, CommentRequestDto dto, Long userId){
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모임입니다."));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
         Comment comment = Comment.builder()
                 .group(group)
@@ -40,9 +43,12 @@ public class CommentService {
 
     // 댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId, User user){
+    public void deleteComment(Long commentId, Long userId){
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
         if (!comment.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("댓글 작성자만 삭제할 수 있습니다.");
@@ -63,12 +69,12 @@ public class CommentService {
 
     // 댓글 좋아요 생성/취소
     @Transactional
-    public String toggleLike(Long commentId, User authUser){
+    public String toggleLike(Long commentId, Long userId){
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
 
         // @ManyToMany의 주인(User) 엔티티를 가져와야 함
-        User user = userRepository.findById(authUser.getId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
         // User 엔티티의 liked_comments Set을 가져옴

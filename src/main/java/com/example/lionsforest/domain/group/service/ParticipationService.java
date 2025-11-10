@@ -19,12 +19,16 @@ import java.util.List;
 public class ParticipationService {
     private final ParticipationRepository participationRepository;
     private final GroupRepository groupRepository;
+    private final UserRepository userRepository;
 
     // 모임 참여
     @Transactional
-    public ParticipationResponseDto joinGroup(Long groupId, User user){
+    public ParticipationResponseDto joinGroup(Long groupId, Long userId){
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모임입니다."));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
         // 중복 참여 체크
         if(participationRepository.existsByGroupAndUser(group, user)) {
@@ -48,7 +52,11 @@ public class ParticipationService {
 
     // 모임 탈퇴
     @Transactional
-    public void leaveGroup(Long groupId, User user) {
+    public void leaveGroup(Long groupId, Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
         Participation participation = participationRepository
                 .findByGroupIdAndUserId(groupId, user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("참여하지 않은 모임입니다."));
