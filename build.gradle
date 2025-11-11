@@ -46,6 +46,8 @@ dependencies {
 	implementation 'software.amazon.awssdk:s3:2.20.26'
 	// mysql jdbc 드라이버 의존성
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	//구글로그인-firebase
+	implementation 'com.google.firebase:firebase-admin:9.3.0'
 }
 
 tasks.named('test') {
