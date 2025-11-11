@@ -72,6 +72,8 @@ public class ParticipationService {
     // 모임 탈퇴
     @Transactional
     public void leaveGroup(Long groupId, Long userId) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모임입니다."));
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
@@ -81,6 +83,11 @@ public class ParticipationService {
                 .orElseThrow(() -> new IllegalArgumentException("참여하지 않은 모임입니다."));
 
         participationRepository.delete(participation);
+
+        long after = participationRepository.countByGroupId(groupId);
+        if (after < group.getCapacity() && group.getState() == GroupState.CLOSED) {
+            group.setState(GroupState.OPEN); // 다시 모집중
+        }
     }
 
     // 모임 참여자 조회
