@@ -16,14 +16,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/participation")
+@RequestMapping("/api/participation/")
 @Tag(name = "모임 참여", description = "모임 참여 관련 API")
 public class ParticipationController {
     private final ParticipationService participationService;
     private final UserRepository userRepository;
 
     // 모임 참여
-    @PostMapping("/{group_id}")
+    @PostMapping("{group_id}/")
     @Operation(summary = "모임 참여", description = "특정 모임(By group_id)에 참여합니다")
     public ResponseEntity<ParticipationResponseDto> joinGroup(@PathVariable("group_id") Long groupId,
                                                               @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
@@ -33,7 +33,7 @@ public class ParticipationController {
     }
 
     // 모임 탈퇴
-    @DeleteMapping("/{group_id}")
+    @DeleteMapping("{group_id}/")
     @Operation(summary = "모임 탈퇴", description = "특정 모임(By group_id)에서 탈퇴합니다")
     public ResponseEntity<String> leaveGroup(@PathVariable("group_id") Long groupId,
                                              @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
@@ -44,7 +44,7 @@ public class ParticipationController {
     }
 
     // 모임 참여자 조회
-    @GetMapping("/{group_id}")
+    @GetMapping("{group_id}/")
     @Operation(summary = "모임 참여자 조회", description = "특정 모임(By group_id)에 참여자를 모두 조회합니다")
     public ResponseEntity<List<ParticipationResponseDto>> getUser(@PathVariable("group_id") Long groupId){
         return ResponseEntity.ok(participationService.getParticipationsByGroupId(groupId));

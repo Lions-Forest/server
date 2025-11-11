@@ -25,7 +25,4 @@ public class Participation extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
-
-    @Column(nullable = false)
-    private Boolean is_active;
 }
