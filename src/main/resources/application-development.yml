@@ -4,6 +4,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${database.username}
     password: ${database.password}
+
 cloud:
   aws:
     credentials:
@@ -15,3 +16,10 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
+# Swagger
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui/index.html

@@ -43,8 +43,9 @@ public class SecurityConfig {
 
                 // API 엔드포인트별 접근 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        // "/auth/**" 경로는 인증 없이 무조건 통과(permitAll)
-                        .requestMatchers("/auth/**").permitAll()
+                        // 인증 없이 무조건 통과(permitAll)하는 경로
+                        .requestMatchers("/auth/**","/swagger-ui/**", "/v3/api-docs/**"
+                        ).permitAll()
                         //api 및 다른 경로: 인증 되면 통과
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
