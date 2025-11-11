@@ -10,22 +10,20 @@ import java.time.LocalDateTime;
 
 @Getter
 public class GroupRequestDto {
-    private Long userId;
     private String title;
     private GroupCategory category;
-    private Integer count;
-    private LocalDateTime meeting_at;
+    private Integer capacity;
+    private LocalDateTime meetingAt;
     private String location;
-    private GroupState state;
 
     public Group toEntity(User leader){
         return Group.builder()
                 .title(this.title)
                 .category(this.category)
-                .count(this.count)
-                .meeting_at(this.meeting_at)
+                .capacity(this.capacity)
+                .meetingAt(this.meetingAt)
                 .location(this.location)
-                .state(this.state)
+                .state(GroupState.OPEN) // 기본 설정 : 모집중
                 .leader(leader)
                 .build();
     }

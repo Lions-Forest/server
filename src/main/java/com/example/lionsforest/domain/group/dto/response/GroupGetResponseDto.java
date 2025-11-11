@@ -1,18 +1,21 @@
 package com.example.lionsforest.domain.group.dto.response;
 
-import com.example.lionsforest.domain.group.GroupCategory;
-import com.example.lionsforest.domain.group.GroupState;
 import com.example.lionsforest.domain.group.Group;
+import com.example.lionsforest.domain.group.GroupCategory;
+import com.example.lionsforest.domain.group.GroupPhoto;
+import com.example.lionsforest.domain.group.GroupState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 
 @Getter
 @Builder
 @AllArgsConstructor
-public class GroupResponseDto {
+public class GroupGetResponseDto {
     private Long id;
     private String title;
     private GroupCategory category;
@@ -21,8 +24,16 @@ public class GroupResponseDto {
     private String location;
     private GroupState state;
 
-    public static GroupResponseDto fromEntity(Group group){
-        return GroupResponseDto.builder()
+    private List<GroupPhotoDto> photos;
+
+    public static GroupGetResponseDto fromEntity(Group group){
+
+        List<GroupPhotoDto> photos = group.getPhotos().stream()
+                .sorted(Comparator.comparing(GroupPhoto::getPhoto_order))
+                .map(GroupPhotoDto::new)
+                .toList();
+
+        return GroupGetResponseDto.builder()
                 .id(group.getId())
                 .title(group.getTitle())
                 .category(group.getCategory())
@@ -30,6 +41,7 @@ public class GroupResponseDto {
                 .meetingAt(group.getMeetingAt())
                 .location(group.getLocation())
                 .state(group.getState())
+                .photos(photos)
                 .build();
     }
 }

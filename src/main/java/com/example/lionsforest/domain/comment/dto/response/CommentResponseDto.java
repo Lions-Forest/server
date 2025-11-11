@@ -13,19 +13,21 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
     private Long id;
     private Long groupId;
-    private String groupTitle;
     private Long userId;
     private String userName;
+    private String content;
+    private int likeCount;
     private LocalDateTime createdAt;
 
     public static CommentResponseDto fromEntity(Comment comment){
         return CommentResponseDto.builder()
-                .id(comment.getComment_id())
+                .id(comment.getCommentId())
                 .groupId(comment.getGroup().getId())
-                .groupTitle(comment.getGroup().getTitle())
                 .userId(comment.getUser().getId())
                 .userName(comment.getUser().getName())
-                .createdAt(comment.getCreated_at())
+                .content(comment.getContent())
+                .likeCount(comment.getLiked_by_users().size()) // 좋아요 수
+                .createdAt(comment.getCreatedAt())
                 .build();
     }
 }

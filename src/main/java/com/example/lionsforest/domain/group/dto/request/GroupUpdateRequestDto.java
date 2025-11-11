@@ -8,11 +8,10 @@ import java.time.LocalDateTime;
 
 @Getter
 public class GroupUpdateRequestDto {
-    private Long userId;
     private String title;
     private GroupCategory category;
-    private Integer count;
-    private LocalDateTime meeting_at;
+    private Integer capacity;
+    private LocalDateTime meetingAt;
     private String location;
     private GroupState state;
 }

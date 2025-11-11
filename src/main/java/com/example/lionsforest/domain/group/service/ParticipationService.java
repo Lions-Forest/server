@@ -4,6 +4,7 @@ import com.example.lionsforest.domain.group.Group;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
 import com.example.lionsforest.domain.group.repository.ParticipationRepository;
 import com.example.lionsforest.domain.user.User;
+import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.domain.group.Participation;
 import com.example.lionsforest.domain.group.dto.response.ParticipationResponseDto;
 
@@ -26,8 +27,9 @@ public class ParticipationService {
     public ParticipationResponseDto joinGroup(Long groupId, Long userId){
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모임입니다."));
+
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
         // 중복 참여 체크
         if(participationRepository.existsByGroupAndUser(group, user)) {
@@ -35,12 +37,10 @@ public class ParticipationService {
         }
 
         // 인원 제한 체크
-        // ****EC2 배포 과정에서 오류가 떠서 일단 주석 처리합니다****
-        /* long currentCount = participationRepository.countByGroupAndStatus((
-                group, ParticipationStatus.APPROVED);
-        if(currentCount >= group.getCount()) {
+        long currentCount = participationRepository.countByGroupId(groupId);
+        if(currentCount >= group.getCapacity()) {
             throw new IllegalArgumentException("모임 인원이 가득 찼습니다.");
-        }*/
+        }
 
         Participation participation = Participation.builder()
                 .group(group)
@@ -54,8 +54,12 @@ public class ParticipationService {
     // 모임 탈퇴
     @Transactional
     public void leaveGroup(Long groupId, Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
         Participation participation = participationRepository
-                .findByGroupIdAndUserId(groupId, userId)
+                .findByGroupIdAndUserId(groupId, user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("참여하지 않은 모임입니다."));
 
         participationRepository.delete(participation);
