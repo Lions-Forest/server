@@ -10,6 +10,8 @@ import com.example.lionsforest.domain.group.dto.request.GroupUpdateRequestDto;
 import com.example.lionsforest.domain.group.GroupPhoto;
 import com.example.lionsforest.domain.group.repository.GroupPhotoRepository;
 import com.example.lionsforest.domain.group.repository.ParticipationRepository;
+import com.example.lionsforest.domain.notification.Notification;
+import com.example.lionsforest.domain.notification.repository.NotificationRepository;
 import com.example.lionsforest.domain.user.User;
 
 
@@ -20,8 +22,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +37,7 @@ public class GroupService {
     private final UserRepository userRepository;
     private final S3UploadService s3UploadService;
     private final ParticipationRepository participationRepository;
+    private final NotificationRepository notificationRepository;
 
     // 모임 개설
     @Transactional
@@ -55,7 +61,7 @@ public class GroupService {
                 GroupPhoto groupPhoto = GroupPhoto.builder()
                         .group(saved)        // 저장된 Group 객체
                         .photo(photoUrl)     // S3에서 반환된 URL
-                        .photo_order(i)      // 사진 순서 (0부터 시작)
+                        .photoOrder(i)      // 사진 순서 (0부터 시작)
                         .build();
 
                 groupPhotos.add(groupPhoto);
@@ -151,10 +157,40 @@ public class GroupService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
+        // 모임 취소 시점 제한
+        if (group.getMeetingAt().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("이미 종료된 모임은 취소할 수 없습니다.");
+        }
+
         // 유저 권한 확인
         if(!group.getLeader().getId().equals(user.getId())){
-            throw new IllegalArgumentException("모임장만 모임을 수정할 수 있습니다.");
+            throw new IllegalArgumentException("모임장만 모임을 삭제할 수 있습니다.");
         }
+
+        // 알림 생성: 모임 참가자들에게 모임 취소 알림 보내기
+        // 해당 모임의 모든 참여 관계 조회 (모임장 제외)
+        List<Participation> participations = participationRepository.findByGroupId(groupId);
+        // 모임 첫 사진 가져오기
+        String photoPath = null;
+        Optional<GroupPhoto> firstPhotoOpt = groupPhotoRepository.findFirstByGroupIdOrderByPhotoOrderAsc(groupId);
+        if (firstPhotoOpt.isPresent()) {
+            photoPath = firstPhotoOpt.get().getPhoto();
+        }
+        // 알림 내용 구성 (예: 😢 "[yy.MM.dd] 모임제목" 모임이 취소되었습니다.)
+        String dateStr = group.getMeetingAt().format(DateTimeFormatter.ofPattern("yy.MM.dd"));
+        String content = "😢 ["+ dateStr + "] " + group.getTitle() + " 모임이 취소되었습니다.";
+        for (Participation part : participations) {
+            // 모임장을 제외하고 알림 전송 (모임장 본인은 알림 생략 가능)
+            if (!part.getUser().getId().equals(userId)) {
+                Notification notification = Notification.builder()
+                        .user(part.getUser())
+                        .content(content)
+                        .photo(photoPath)
+                        .build();
+                notificationRepository.save(notification);
+            }
+        }
+
 
         // 사진 삭제
         if (group.getPhotos() != null) {

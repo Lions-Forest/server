@@ -33,7 +33,7 @@ public class GroupGetResponseDto {
     public static GroupGetResponseDto fromEntity(Group group){
 
         List<GroupPhotoDto> photos = group.getPhotos().stream()
-                .sorted(Comparator.comparing(GroupPhoto::getPhoto_order))
+                .sorted(Comparator.comparing(GroupPhoto::getPhotoOrder))
                 .map(GroupPhotoDto::new)
                 .toList();
 

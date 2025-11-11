@@ -1,20 +1,19 @@
 package com.example.lionsforest.domain.notification;
 
 import com.example.lionsforest.domain.user.User;
+import com.example.lionsforest.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Notification {
+public class Notification extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,8 +28,7 @@ public class Notification {
     private String photo;
 
     @Column(nullable = false)
-    private boolean is_read;
+    private boolean isRead = false;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime created_at;
+    public void markRead() { this.isRead = true; }
 }
