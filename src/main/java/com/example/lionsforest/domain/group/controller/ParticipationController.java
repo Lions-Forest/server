@@ -32,6 +32,15 @@ public class ParticipationController {
         return ResponseEntity.ok(participationService.joinGroup(groupId, loginUserId));
     }
 
+    // 내가 참여한 모임 조회
+    @GetMapping("my/")
+    @Operation(summary = "내가 참여한 모임 조회", description = "내가 참여한 모임을 모두 조회합니다")
+    public ResponseEntity<List<ParticipationResponseDto>> getUser(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
+        Long loginUserId = Long.valueOf(principal.getUsername());
+
+        return ResponseEntity.ok(participationService.getAllMyParticipations(loginUserId));
+    }
+
     // 모임 탈퇴
     @DeleteMapping("{group_id}/")
     @Operation(summary = "모임 탈퇴", description = "특정 모임(By group_id)에서 탈퇴합니다")

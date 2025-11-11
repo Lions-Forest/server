@@ -1,6 +1,7 @@
 package com.example.lionsforest.domain.group.service;
 
 import com.example.lionsforest.domain.group.Group;
+import com.example.lionsforest.domain.group.GroupState;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
 import com.example.lionsforest.domain.group.repository.ParticipationRepository;
 import com.example.lionsforest.domain.user.User;
@@ -38,7 +39,8 @@ public class ParticipationService {
 
         // 인원 제한 체크
         long currentCount = participationRepository.countByGroupId(groupId);
-        if(currentCount >= group.getCapacity()) {
+        int capacity = group.getCapacity();
+        if(currentCount >= capacity) {
             throw new IllegalArgumentException("모임 인원이 가득 찼습니다.");
         }
 
@@ -48,7 +50,23 @@ public class ParticipationService {
                 .build();
 
         Participation saved = participationRepository.save(participation);
+
+        long after = currentCount + 1;
+        if (after >= capacity && group.getState() != GroupState.CLOSED) {
+            group.setState(GroupState.CLOSED); // 모집완료로 전환
+        }
+
         return ParticipationResponseDto.fromEntity(saved);
+    }
+
+    // 내가 참여한 모임 목록 조회
+    @Transactional(readOnly = true)
+    public List<ParticipationResponseDto> getAllMyParticipations(Long userId){
+        List<Participation> participations = participationRepository.findByUserId(userId);
+
+        return participations.stream()
+                .map(ParticipationResponseDto::fromEntity)
+                .toList();
     }
 
     // 모임 탈퇴

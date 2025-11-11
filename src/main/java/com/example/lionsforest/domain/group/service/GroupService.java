@@ -1,6 +1,7 @@
 package com.example.lionsforest.domain.group.service;
 
 import com.example.lionsforest.domain.group.Group;
+import com.example.lionsforest.domain.group.Participation;
 import com.example.lionsforest.domain.group.dto.request.GroupRequestDto;
 import com.example.lionsforest.domain.group.dto.response.GroupGetResponseDto;
 import com.example.lionsforest.domain.group.dto.response.GroupResponseDto;
@@ -8,6 +9,7 @@ import com.example.lionsforest.domain.group.repository.GroupRepository;
 import com.example.lionsforest.domain.group.dto.request.GroupUpdateRequestDto;
 import com.example.lionsforest.domain.group.GroupPhoto;
 import com.example.lionsforest.domain.group.repository.GroupPhotoRepository;
+import com.example.lionsforest.domain.group.repository.ParticipationRepository;
 import com.example.lionsforest.domain.user.User;
 
 
@@ -29,6 +31,7 @@ public class GroupService {
     private final GroupPhotoRepository groupPhotoRepository;
     private final UserRepository userRepository;
     private final S3UploadService s3UploadService;
+    private final ParticipationRepository participationRepository;
 
     // 모임 개설
     @Transactional
@@ -61,10 +64,14 @@ public class GroupService {
             groupPhotoRepository.saveAll(groupPhotos);
         }
 
-        return new GroupResponseDto(saved.getId(),
-                saved.getTitle(), saved.getCategory(),
-                saved.getCapacity(), saved.getMeetingAt(),
-                saved.getLocation(), saved.getState());
+        // 모임장은 모임 자동 참여
+        Participation leaderParticipation = Participation.builder()
+                .group(saved)
+                .user(user)
+                .build();
+        participationRepository.save(leaderParticipation);
+
+        return GroupResponseDto.fromEntity(saved);
     }
 
     // 모임 정보 전체 조회
@@ -84,6 +91,14 @@ public class GroupService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
 
         return GroupGetResponseDto.fromEntity(group);
+    }
+
+    // 내가 개설한 모임 전체 조회
+    @Transactional(readOnly = true)
+    public List<GroupGetResponseDto> getAllGroupByLeader(Long userId){
+        return groupRepository.findAllByLeaderId(userId).stream()
+                .map(GroupGetResponseDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     // 모임 수정
