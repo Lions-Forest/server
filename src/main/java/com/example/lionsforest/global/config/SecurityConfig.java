@@ -66,10 +66,14 @@ public class SecurityConfig {
 
         //허용할 origin: 프론트엔드 도메인(https://lions-forest.p-e.kr) & 로컬 개발 환경
         config.setAllowedOrigins(Arrays.asList(
+                //프론트엔드 주소
                 "https://lions-forest.p-e.kr",
                 "http://lions-forest.p-e.kr",
                 "http://localhost:3000",
-                "http://localhost:5173"
+                "http://localhost:5173",
+                //백엔드 주소
+                "https://api.lions-forest.p-e.kr",
+                "http://localhost:8080"
         ));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); //허용할 http 메서드
         config.setAllowedHeaders(Arrays.asList("*")); //모든 http 헤더 허용
