@@ -35,7 +35,6 @@ public class ReviewService {
     @Transactional
     public ReviewResponseDto createReview(Long groupId,
                                           ReviewRequestDto dto,
-                                          List<MultipartFile> photos,
                                           Long userId){
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모임입니다."));
@@ -51,6 +50,7 @@ public class ReviewService {
 
         Review saved = reviewRepository.save(review);
 
+        List<MultipartFile> photos = dto.getPhotos();
         if (photos != null && !photos.isEmpty()) {
             List<ReviewPhoto> reviewPhotos = new ArrayList<>();
             for (int i = 0; i < photos.size(); i++) {
@@ -99,7 +99,6 @@ public class ReviewService {
     @Transactional
     public ReviewResponseDto updateReview(Long reviewId,
                                           ReviewUpdateRequestDto dto,
-                                          List<MultipartFile> addPhotos,
                                           Long userId){
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 후기가 존재하지 않습니다."));
@@ -136,6 +135,7 @@ public class ReviewService {
             review.getPhotos().removeAll(toDelete);
         }
 
+        List<MultipartFile> addPhotos = dto.getAddPhotos();
         // 사진 추가
         if (addPhotos != null && !addPhotos.isEmpty()) {
             // 현재 최대 photo_order 계산

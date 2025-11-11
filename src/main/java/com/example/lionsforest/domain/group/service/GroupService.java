@@ -32,9 +32,7 @@ public class GroupService {
 
     // 모임 개설
     @Transactional
-    public GroupResponseDto createGroup(GroupRequestDto dto,
-                                        List<MultipartFile> photos,
-                                        Long userId){
+    public GroupResponseDto createGroup(GroupRequestDto dto, Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
@@ -42,6 +40,7 @@ public class GroupService {
         Group group = dto.toEntity(user);
         Group saved = groupRepository.save(group);
 
+        List<MultipartFile> photos = dto.getPhotos();
         if (photos != null && !photos.isEmpty()) {
             List<GroupPhoto> groupPhotos = new ArrayList<>();
             for (int i = 0; i < photos.size(); i++) {
