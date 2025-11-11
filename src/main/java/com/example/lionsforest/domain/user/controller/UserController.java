@@ -4,10 +4,14 @@ package com.example.lionsforest.domain.user.controller;
 import com.example.lionsforest.domain.user.dto.UserInfoResponseDTO;
 import com.example.lionsforest.domain.user.dto.UserUpdateRequestDTO;
 import com.example.lionsforest.domain.user.service.UserService;
+import com.example.lionsforest.global.config.PrincipalHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,15 +38,23 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserInfo(userId));
     }
 
-    //유저 정보 수정
-    @PatchMapping("/{userId}")
-    @Operation(summary = "유저 정보 수정", description = "user_id 유저의 정보를 수정합니다")
+    //내 정보 조회
+    @GetMapping("/me")
+    @Operation(summary = "내 정보 조회", description = "마이페이지에서 내 상세 정보를 조회합니다")
+    public ResponseEntity<UserInfoResponseDTO> getMyInfo() {
+        Long authenticatedUserId = PrincipalHandler.getUserId();
+        UserInfoResponseDTO response = userService.getUserInfo(authenticatedUserId);
+        return ResponseEntity.ok(response);
+    }
+
+    //내 정보 수정
+    @PatchMapping("/me")
+    @Operation(summary = "내 정보 수정", description = "마이페이지에서 내 유저 정보를 수정합니다")
     public ResponseEntity<UserInfoResponseDTO> updateUser(
-            @PathVariable Long userId,
-            @RequestBody UserUpdateRequestDTO request) {
+            @RequestBody @Valid UserUpdateRequestDTO request) {
+        Long authenticatedUserId = PrincipalHandler.getUserId();
 
-
-        UserInfoResponseDTO updatedUser = userService.updateUserInfo(userId, request);
+        UserInfoResponseDTO updatedUser = userService.updateUserInfo(authenticatedUserId, request);
         return ResponseEntity.ok(updatedUser);
     }
 }

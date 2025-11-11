@@ -4,6 +4,8 @@ import com.example.lionsforest.domain.user.User;
 import com.example.lionsforest.domain.user.dto.UserInfoResponseDTO;
 import com.example.lionsforest.domain.user.dto.UserUpdateRequestDTO;
 import com.example.lionsforest.domain.user.repository.UserRepository;
+import com.example.lionsforest.global.exception.BusinessException;
+import com.example.lionsforest.global.exception.ErrorCode;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,7 +43,7 @@ public class UserService {
         if (request.getNickname() != null &&
                 !request.getNickname().equals(user.getNickname()) &&
                 userRepository.existsByNickname(request.getNickname())) {
-            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+            throw new BusinessException(ErrorCode.NICKNAME_ALREADY_EXISTS);
         }
 
         // User 엔티티 내부의 update 메서드 호출 (JPA 변경 감지)
@@ -56,6 +58,6 @@ public class UserService {
 
     private User findUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다. ID: " + userId));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 }
