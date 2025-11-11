@@ -1,5 +1,7 @@
 package com.example.lionsforest.global.config;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -10,6 +12,11 @@ import org.springframework.context.annotation.Configuration;
 
 import static java.awt.SystemColor.info;
 
+@OpenAPIDefinition(
+        servers = {
+                @Server(url = "https://api.lions-forest.p-e.kr", description = "Production server URL")
+        }
+)
 @Configuration
 public class SwaggerConfig {
 
