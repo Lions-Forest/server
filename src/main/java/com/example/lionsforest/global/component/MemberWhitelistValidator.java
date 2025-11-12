@@ -37,6 +37,9 @@ public class MemberWhitelistValidator {
                 }
             }
             log.info("Loaded {} members into whitelist", whitelist.size());
+            // 맵에 실제로 저장된 Key-Value 쌍 전체를 출력
+            log.info("Whitelist contents: {}", whitelist);
+
         }catch(IOException e){
             log.error("Failed to load whitelist", e);
         }
@@ -46,7 +49,7 @@ public class MemberWhitelistValidator {
     public boolean isMember(String googleName, String googleEmail) {
         //whitelist에 이메일 키 있는지 검증
         if(!whitelist.containsKey(googleEmail)){
-            log.warn("User {} does not have a whitelisted member", googleEmail);
+            log.warn("User {} does not have a whitelisted member. (Email NOT FOUND)", googleEmail);
             return false;
         }
 
@@ -54,9 +57,9 @@ public class MemberWhitelistValidator {
         String whitelistName = whitelist.get(googleEmail);
         boolean isMatch = googleName.equals(whitelistName);
         if(!isMatch){
-            log.warn("User {} does not have a whitelisted member", googleEmail);
+            log.info("Name mismatch (but allowing login): Google='{}', Whitelist='{}'", googleName, whitelistName);
         }
-        return isMatch;
+        return true;
     }
 
 }
