@@ -3,6 +3,7 @@ package com.example.lionsforest.domain.group.service;
 import com.example.lionsforest.domain.group.Group;
 import com.example.lionsforest.domain.group.GroupPhoto;
 import com.example.lionsforest.domain.group.GroupState;
+import com.example.lionsforest.domain.group.dto.response.GroupGetResponseDto;
 import com.example.lionsforest.domain.group.repository.GroupPhotoRepository;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
 import com.example.lionsforest.domain.group.repository.ParticipationRepository;
@@ -84,11 +85,11 @@ public class ParticipationService {
 
     // 내가 참여한 모임 목록 조회
     @Transactional(readOnly = true)
-    public List<ParticipationResponseDto> getAllMyParticipations(Long userId){
+    public List<GroupGetResponseDto> getAllMyParticipations(Long userId){
         List<Participation> participations = participationRepository.findByUserId(userId);
 
         return participations.stream()
-                .map(ParticipationResponseDto::fromEntity)
+                .map(participation -> GroupGetResponseDto.fromEntity(participation.getGroup()))
                 .toList();
     }
 

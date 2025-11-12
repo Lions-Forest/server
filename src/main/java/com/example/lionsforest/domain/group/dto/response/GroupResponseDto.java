@@ -6,9 +6,11 @@ import com.example.lionsforest.domain.group.Group;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Setter
 @Getter
 @Builder
 @AllArgsConstructor
@@ -23,7 +25,7 @@ public class GroupResponseDto {
     private LocalDateTime meetingAt;
     private String location;
     private GroupState state;
-    private int participantCount;
+    private long participantCount;
 
     public static GroupResponseDto fromEntity(Group group){
         return GroupResponseDto.builder()
