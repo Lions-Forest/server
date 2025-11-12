@@ -40,7 +40,7 @@ public class GroupRequestDto {
     private LocalDateTime meetingAt;
 
     @Schema(description = "모임 장소")
-    @NotNull
+    @NotBlank
     private String location;
 
     @ArraySchema(

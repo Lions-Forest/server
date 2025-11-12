@@ -5,6 +5,7 @@ import com.example.lionsforest.domain.group.Group;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 public interface GroupRepository extends JpaRepository<Group, Long> {
@@ -13,4 +14,6 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     Optional<Group> findByIdWithPhotos(@Param("id") Long id);
 
     List<Group> findAllByLeaderId(Long leaderId);
+
+    List<Group> findByMeetingAtBetween(LocalDateTime startRange, LocalDateTime endRange);
 }

@@ -77,7 +77,10 @@ public class GroupService {
                 .build();
         participationRepository.save(leaderParticipation);
 
-        return GroupResponseDto.fromEntity(saved);
+        long participantCount = participationRepository.countByGroupId(saved.getId());
+        GroupResponseDto response = GroupResponseDto.fromEntity(saved);
+        response.setParticipantCount(participantCount);
+        return response;
     }
 
     // 모임 정보 전체 조회

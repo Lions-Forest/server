@@ -1,5 +1,6 @@
 package com.example.lionsforest.domain.group.controller;
 
+import com.example.lionsforest.domain.group.dto.response.GroupGetResponseDto;
 import com.example.lionsforest.domain.group.dto.response.ParticipationResponseDto;
 import com.example.lionsforest.domain.group.service.ParticipationService;
 
@@ -35,7 +36,7 @@ public class ParticipationController {
     // 내가 참여한 모임 조회
     @GetMapping("my/")
     @Operation(summary = "내가 참여한 모임 조회", description = "내가 참여한 모임을 모두 조회합니다")
-    public ResponseEntity<List<ParticipationResponseDto>> getUser(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
+    public ResponseEntity<List<GroupGetResponseDto>> getUser(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
         Long loginUserId = Long.valueOf(principal.getUsername());
 
         return ResponseEntity.ok(participationService.getAllMyParticipations(loginUserId));
