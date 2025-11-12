@@ -15,6 +15,7 @@ public class ParticipationResponseDto {
     private Long groupId;
     private Long userId;
     private String userName;
+    private String userNickname;
     private LocalDateTime createdAt;
 
     public static ParticipationResponseDto fromEntity(Participation participation){
@@ -23,6 +24,7 @@ public class ParticipationResponseDto {
                 .groupId(participation.getGroup().getId())
                 .userId(participation.getUser().getId())
                 .userName(participation.getUser().getName())
+                .userNickname(participation.getUser().getNickname())
                 .createdAt(participation.getCreatedAt())
                 .build();
     }

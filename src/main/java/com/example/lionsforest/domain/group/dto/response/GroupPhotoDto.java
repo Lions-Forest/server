@@ -11,6 +11,6 @@ public class GroupPhotoDto {
 
     public GroupPhotoDto(GroupPhoto photo) {
         this.photoUrl = photo.getPhoto();
-        this.order = photo.getPhoto_order();
+        this.order = photo.getPhotoOrder();
     }
 }

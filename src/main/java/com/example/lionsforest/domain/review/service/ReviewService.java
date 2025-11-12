@@ -1,7 +1,13 @@
 package com.example.lionsforest.domain.review.service;
 
 import com.example.lionsforest.domain.group.Group;
+import com.example.lionsforest.domain.group.GroupPhoto;
+import com.example.lionsforest.domain.group.Participation;
+import com.example.lionsforest.domain.group.repository.GroupPhotoRepository;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
+import com.example.lionsforest.domain.group.repository.ParticipationRepository;
+import com.example.lionsforest.domain.notification.Notification;
+import com.example.lionsforest.domain.notification.repository.NotificationRepository;
 import com.example.lionsforest.domain.review.Review;
 import com.example.lionsforest.domain.review.ReviewPhoto;
 import com.example.lionsforest.domain.review.dto.request.ReviewRequestDto;
@@ -19,17 +25,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewPhotoRepository reviewPhotoRepository;
+    private final ParticipationRepository participationRepository;
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
     private final S3UploadService s3UploadService;
+    private final GroupPhotoRepository groupPhotoRepository;
+    private final NotificationRepository notificationRepository;
 
     // 후기 생성
     @Transactional
@@ -40,6 +51,10 @@ public class ReviewService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모임입니다."));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        if (!participationRepository.existsByGroupIdAndUserId(groupId, userId)) {
+            throw new IllegalArgumentException("참여한 모임에만 후기를 작성할 수 있습니다.");
+        }
 
         Review review = Review.builder()
                 .group(group)
@@ -69,6 +84,29 @@ public class ReviewService {
             }
             // ReviewPhoto 리스트를 DB에 한 번에 저장 (Batch Insert)
             reviewPhotoRepository.saveAll(reviewPhotos);
+        }
+
+        // 알림 생성: 다른 모임원들에게 후기 작성 알림 보내기
+        String dateStr = group.getMeetingAt().format(DateTimeFormatter.ofPattern("yy.MM.dd"));
+        String content = "🙌 '" + (user.getNickname() != null ? user.getNickname() : user.getName()) +
+                "'님이 [" + dateStr + "] " + group.getTitle() + " 모임에 모임 후기를 작성했어요.";
+        // 모임 첫 사진 경로
+        String photoPath = null;
+        Optional<GroupPhoto> firstPhotoOpt = groupPhotoRepository.findFirstByGroupIdOrderByPhotoOrderAsc(groupId);
+        if (firstPhotoOpt.isPresent()) {
+            photoPath = firstPhotoOpt.get().getPhoto();
+        }
+        // 모임에 참여한 모든 사용자에게 알림 (작성자 본인 제외)
+        List<Participation> participations = participationRepository.findByGroupId(groupId);
+        for (Participation part : participations) {
+            if (!part.getUser().getId().equals(userId)) {
+                Notification notification = Notification.builder()
+                        .user(part.getUser())
+                        .content(content)
+                        .photo(photoPath)
+                        .build();
+                notificationRepository.save(notification);
+            }
         }
 
         return ReviewResponseDto.fromEntity(saved);

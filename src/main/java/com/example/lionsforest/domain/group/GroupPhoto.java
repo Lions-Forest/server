@@ -24,5 +24,5 @@ public class GroupPhoto {
     private String photo;
 
     @Column(nullable = false)
-    private Integer photo_order;
+    private Integer photoOrder;
 }

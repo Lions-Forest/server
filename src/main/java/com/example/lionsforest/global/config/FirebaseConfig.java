@@ -31,6 +31,10 @@ public class FirebaseConfig {
         }catch(IOException e){
             // TODO: 예외처리
             e.printStackTrace();
-        }
+            }
+
     }
+
 }
+
+

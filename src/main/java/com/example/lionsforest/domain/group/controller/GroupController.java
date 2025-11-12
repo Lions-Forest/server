@@ -81,6 +81,16 @@ public class GroupController {
         return ResponseEntity.ok(responseDto);
     }
 
+    // 내가 개설한 모임 전체 조회
+    @GetMapping("leader/")
+    @Operation(summary = "내가 개설한 모임 전체 조회", description = "내가 개설한 모임에 대한 정보를 조회합니다")
+    public ResponseEntity<List<GroupGetResponseDto>> getAllGroupByLeader(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
+        Long loginUserId = Long.valueOf(principal.getUsername());
+
+        List<GroupGetResponseDto> responseDto = groupService.getAllGroupByLeader(loginUserId);
+        return ResponseEntity.ok(responseDto);
+    }
+
     // 모임 정보 수정
     @PatchMapping("{group_id}/")
     @Operation(summary = "모임 정보 수정", description = "특정 모임(By group_id)의 정보를 수정합니다(사진 제외)")
