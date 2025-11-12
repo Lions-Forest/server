@@ -27,7 +27,8 @@ public class TempAuthController { //프론트 테스트용 임시 컨트롤러
     @GetMapping("/auth/test-token") // SecurityConfig에서 /auth/** 는 permitAll 이라 접근 가능
     @Operation(summary = "임시 로그인", description = "임시로 유저 로그인을 처리하고 액세스 토큰을 발급합니다")
     public ResponseEntity<TokenResponseDTO> getTestToken(
-            @RequestParam(defaultValue = "test@example.com") String email
+            @RequestParam(defaultValue = "test@example.com") String email,
+            @RequestParam(defaultValue = "테스트유저") String name
     ) {
         // 1. 테스트 코드의 로직과 동일: 유저 조회 또는 생성
         User user = userRepository.findByEmail(email)
@@ -35,7 +36,7 @@ public class TempAuthController { //프론트 테스트용 임시 컨트롤러
                     // User 엔티티 빌더에 맞게 수정하세요
                     User newUser = User.builder()
                             .email(email)
-                            .name("테스트유저")
+                            .name(name)
                             .bio("")
                             .nickname("")
                             .profile_photo(null)
