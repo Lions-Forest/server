@@ -1,9 +1,13 @@
 package com.example.lionsforest;
 
+import com.example.lionsforest.domain.user.User;
+import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.global.jwt.JwtTokenProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 class TokenGenerationTest { // 클래스 이름은 아무거나 상관없습니다.
@@ -11,12 +15,24 @@ class TokenGenerationTest { // 클래스 이름은 아무거나 상관없습니�
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
+    @Transactional
+    @Commit
     void generateTestToken() {
-        // --- 여기만 수정 ---
-        Long testUserId = 1L; // DB에 있는 테스트용 유저 ID
-        String testUserEmail = "test@example.com"; // 해당 유저 이메일
-        // -----------------
+        //DB에서 이메일로 유저 찾거나 생성
+        String testUserEmail = "test@example.com";
+        User user = userRepository.findByEmail(testUserEmail)
+                .orElseGet(() -> {
+                    User testUser = User.builder()
+                            .email(testUserEmail)
+                            .name("테스트유저")
+                            .build();
+                    return userRepository.save(testUser);
+                });
+        Long testUserId = user.getId();
 
         // 토큰 생성
         var tokenResponseDTO = jwtTokenProvider.createTokens(testUserId, testUserEmail);
