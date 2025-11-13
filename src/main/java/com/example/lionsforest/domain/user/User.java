@@ -8,10 +8,7 @@ import com.example.lionsforest.domain.radar.Radar;
 import com.example.lionsforest.domain.user.dto.UserInfoResponseDTO;
 import com.example.lionsforest.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -21,6 +18,7 @@ import java.util.Set;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -94,16 +92,10 @@ public class User extends BaseTimeEntity {
 
     //메서드
     // 유저 프로필 수정
-    public void updateProfile(String nickname, String bio, String profile_photo) {
-        //null이 아닐 때만 필드 업데이트
-        if(nickname != null & nickname.isBlank()){
-            this.nickname = nickname;
-        }
-        if(bio != null & bio.isBlank()){
-            this.bio = bio;
-        }
-        if(profile_photo != null & profile_photo.isBlank()){
-            this.profile_photo = profile_photo;
-        }
+    // 닉네임 & 바이오 - 항상 업데이트
+    public void updateNicknameAndBio(String nickname, String bio) {
+        this.nickname = nickname;
+        this.bio = bio;
     }
+    //profile_photo 업데이트 : @Setter의 setProfile_photo() 사용
 }

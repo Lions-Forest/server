@@ -4,12 +4,14 @@ import com.example.lionsforest.domain.user.User;
 import com.example.lionsforest.domain.user.dto.UserInfoResponseDTO;
 import com.example.lionsforest.domain.user.dto.UserUpdateRequestDTO;
 import com.example.lionsforest.domain.user.repository.UserRepository;
+import com.example.lionsforest.global.common.S3UploadService;
 import com.example.lionsforest.global.exception.BusinessException;
 import com.example.lionsforest.global.exception.ErrorCode;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final S3UploadService s3UploadService;
 
     //유저 목록 전체 조회
     public List<UserInfoResponseDTO> getAllUsers() {
@@ -46,12 +49,32 @@ public class UserService {
             throw new BusinessException(ErrorCode.NICKNAME_ALREADY_EXISTS);
         }
 
-        // User 엔티티 내부의 update 메서드 호출 (JPA 변경 감지)
-        user.updateProfile(
-                request.getNickname(),
-                request.getBio(),
-                request.getProfile_photo()
-        );
+        // 닉네임, 한 줄 소개 업데이트
+        user.updateNicknameAndBio(request.getNickname(), request.getBio());
+
+        // photo S3에 업로드 - 요청받은 photo가 존재할 때만
+        MultipartFile photo = request.getPhoto();
+        boolean removePhotoFlag = (request.getRemovePhoto() != null && request.getRemovePhoto());
+
+        //사진 제거하는 경우
+        if(removePhotoFlag) {
+            //기존 사진이 있으면 S3에서 삭제
+            if(user.getProfile_photo() != null) {
+                s3UploadService.delete(user.getProfile_photo());
+            }
+            //DB에도 null로 설정
+            user.setProfile_photo(null);
+        }
+        //제거 요청 X, 새 사진 업로드
+        else if(photo != null) {
+            //기존 사진 있으면 s3에서 삭제
+            if(user.getProfile_photo() != null) {
+                s3UploadService.delete(user.getProfile_photo());
+            }
+            String newPhotoUrl = s3UploadService.upload(photo, "profile_photo");
+            //DB에 새 photoUrl 저장
+            user.setProfile_photo(newPhotoUrl);
+        }
 
         return UserInfoResponseDTO.from(user);
     }
