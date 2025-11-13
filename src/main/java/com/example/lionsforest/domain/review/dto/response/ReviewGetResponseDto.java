@@ -17,6 +17,7 @@ public class ReviewGetResponseDto {
     private Long id;
     private Long groupId;
     private Long userId;
+    private String groupTitle;
     private String content;
     private Integer score;
     private LocalDateTime createdAt;
@@ -34,6 +35,7 @@ public class ReviewGetResponseDto {
                 .id(review.getId())
                 .groupId(review.getGroup().getId())
                 .userId(review.getUser().getId())
+                .groupTitle(review.getGroup().getTitle())
                 .content(review.getContent())
                 .score(review.getScore())
                 .createdAt(review.getCreatedAt())
