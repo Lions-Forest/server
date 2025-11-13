@@ -14,7 +14,9 @@ public class CommentResponseDto {
     private Long id;
     private Long groupId;
     private Long userId;
+    private String profilePhotoUrl;
     private String userName;
+    private String userNickName;
     private String content;
     private int likeCount;
     private LocalDateTime createdAt;
@@ -24,7 +26,9 @@ public class CommentResponseDto {
                 .id(comment.getCommentId())
                 .groupId(comment.getGroup().getId())
                 .userId(comment.getUser().getId())
+                .profilePhotoUrl(comment.getUser().getProfile_photo())
                 .userName(comment.getUser().getName())
+                .userNickName(comment.getUser().getNickname())
                 .content(comment.getContent())
                 .likeCount(comment.getLiked_by_users().size()) // 좋아요 수
                 .createdAt(comment.getCreatedAt())

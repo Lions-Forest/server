@@ -17,6 +17,9 @@ public class ReviewGetResponseDto {
     private Long id;
     private Long groupId;
     private Long userId;
+    private String userName;
+    private String userNickName;
+    private String profilePhotoUrl;
     private String groupTitle;
     private String content;
     private Integer score;
@@ -35,6 +38,9 @@ public class ReviewGetResponseDto {
                 .id(review.getId())
                 .groupId(review.getGroup().getId())
                 .userId(review.getUser().getId())
+                .userName(review.getUser().getName())
+                .userNickName(review.getUser().getNickname())
+                .profilePhotoUrl(review.getUser().getProfile_photo())
                 .groupTitle(review.getGroup().getTitle())
                 .content(review.getContent())
                 .score(review.getScore())
