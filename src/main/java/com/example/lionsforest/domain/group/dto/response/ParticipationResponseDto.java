@@ -16,6 +16,7 @@ public class ParticipationResponseDto {
     private Long userId;
     private String userName;
     private String userNickname;
+    private String profilePhotoUrl;
     private LocalDateTime createdAt;
 
     public static ParticipationResponseDto fromEntity(Participation participation){
@@ -25,6 +26,7 @@ public class ParticipationResponseDto {
                 .userId(participation.getUser().getId())
                 .userName(participation.getUser().getName())
                 .userNickname(participation.getUser().getNickname())
+                .profilePhotoUrl(participation.getUser().getProfile_photo())
                 .createdAt(participation.getCreatedAt())
                 .build();
     }
