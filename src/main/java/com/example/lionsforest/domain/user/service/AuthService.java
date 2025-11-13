@@ -1,16 +1,14 @@
 package com.example.lionsforest.domain.user.service;
 
 import com.example.lionsforest.domain.user.User;
-import com.example.lionsforest.domain.user.dto.LoginRequestDTO;
-import com.example.lionsforest.domain.user.dto.LoginResponseDTO;
-import com.example.lionsforest.domain.user.dto.TokenResponseDTO;
-import com.example.lionsforest.domain.user.dto.UserInfoDTO;
+import com.example.lionsforest.domain.user.dto.request.LoginRequestDTO;
+import com.example.lionsforest.domain.user.dto.response.LoginResponseDTO;
+import com.example.lionsforest.domain.user.dto.response.TokenResponseDTO;
+import com.example.lionsforest.domain.user.dto.request.UserInfoRequestDTO;
 import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.global.component.FirebaseTokenVerifier;
-import com.example.lionsforest.global.component.GoogleTokenVerifier;
 import com.example.lionsforest.global.component.MemberWhitelistValidator;
 import com.example.lionsforest.global.jwt.JwtTokenProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,7 @@ public class AuthService {
         //request DTO에서 idToken 꺼내기
         String idToken = request.getIdToken();
         //firebasetokenverifier가 토큰 검증 -> 사용자 정보 추출
-        UserInfoDTO userInfo;
+        UserInfoRequestDTO userInfo;
         try{
             userInfo = firebaseTokenVerifier.verifyIdToken(idToken);
         }catch(AuthenticationException e){

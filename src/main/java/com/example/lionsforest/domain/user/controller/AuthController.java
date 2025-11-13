@@ -1,7 +1,7 @@
 package com.example.lionsforest.domain.user.controller;
 
-import com.example.lionsforest.domain.user.dto.LoginRequestDTO;
-import com.example.lionsforest.domain.user.dto.LoginResponseDTO;
+import com.example.lionsforest.domain.user.dto.request.LoginRequestDTO;
+import com.example.lionsforest.domain.user.dto.response.LoginResponseDTO;
 import com.example.lionsforest.domain.user.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,6 +1,6 @@
 package com.example.lionsforest.global.component;
 
-import com.example.lionsforest.domain.user.dto.UserInfoDTO;
+import com.example.lionsforest.domain.user.dto.request.UserInfoRequestDTO;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -26,7 +26,7 @@ public class GoogleTokenVerifier {
                 .build();
     }
 
-    public UserInfoDTO verify(String idToken) {
+    public UserInfoRequestDTO verify(String idToken) {
         try {
             if (clientId == null || clientId.isBlank() || clientId.contains("YOUR_GOOGLE_CLIENT_ID")) {
                 throw new IllegalArgumentException("Google Client ID가 application.yml에 설정되지 않았습니다.");
@@ -46,7 +46,7 @@ public class GoogleTokenVerifier {
                 throw new SecurityException("구글 토큰에서 이메일 또는 이름 정보를 가져올 수 없습니다.");
             }
 
-            return UserInfoDTO.builder()
+            return UserInfoRequestDTO.builder()
                     .name(name)
                     .email(email)
                     .profile_photo(profile_photo)

@@ -1,7 +1,6 @@
-package com.example.lionsforest.domain.user.dto;
+package com.example.lionsforest.domain.user.dto.response;
 
 import com.example.lionsforest.domain.user.User;
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import lombok.Builder;
 import lombok.Getter;
 

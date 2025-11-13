@@ -1,8 +1,8 @@
 package com.example.lionsforest.domain.user.controller;
 
 
-import com.example.lionsforest.domain.user.dto.UserInfoResponseDTO;
-import com.example.lionsforest.domain.user.dto.UserUpdateRequestDTO;
+import com.example.lionsforest.domain.user.dto.response.UserInfoResponseDTO;
+import com.example.lionsforest.domain.user.dto.request.UserUpdateRequestDTO;
 import com.example.lionsforest.domain.user.service.UserService;
 import com.example.lionsforest.global.config.PrincipalHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,13 +10,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

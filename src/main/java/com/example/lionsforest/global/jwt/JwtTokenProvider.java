@@ -1,6 +1,6 @@
 package com.example.lionsforest.global.jwt;
 
-import com.example.lionsforest.domain.user.dto.TokenResponseDTO;
+import com.example.lionsforest.domain.user.dto.response.TokenResponseDTO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

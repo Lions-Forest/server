@@ -5,11 +5,9 @@ import com.example.lionsforest.domain.group.Group;
 import com.example.lionsforest.domain.group.Participation;
 import com.example.lionsforest.domain.notification.Notification;
 import com.example.lionsforest.domain.radar.Radar;
-import com.example.lionsforest.domain.user.dto.UserInfoResponseDTO;
 import com.example.lionsforest.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;

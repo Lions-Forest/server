@@ -1,13 +1,12 @@
 package com.example.lionsforest.domain.user.service;
 
 import com.example.lionsforest.domain.user.User;
-import com.example.lionsforest.domain.user.dto.UserInfoResponseDTO;
-import com.example.lionsforest.domain.user.dto.UserUpdateRequestDTO;
+import com.example.lionsforest.domain.user.dto.response.UserInfoResponseDTO;
+import com.example.lionsforest.domain.user.dto.request.UserUpdateRequestDTO;
 import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.global.common.S3UploadService;
 import com.example.lionsforest.global.exception.BusinessException;
 import com.example.lionsforest.global.exception.ErrorCode;
-import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,6 @@
-package com.example.lionsforest.domain.user.dto;
+package com.example.lionsforest.domain.user.dto.request;
 
 import com.example.lionsforest.domain.user.User;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,7 +8,7 @@ import lombok.Getter;
 // GoogleTokenVerifier가 반환하는 내부 전용 DTO
 @Getter
 @Builder
-public class UserInfoDTO {
+public class UserInfoRequestDTO {
     private String name;
     private String email;
     private String profile_photo;
