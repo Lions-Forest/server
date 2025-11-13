@@ -1,6 +1,7 @@
 package com.example.lionsforest.domain.user.service;
 
 import com.example.lionsforest.domain.user.User;
+import com.example.lionsforest.domain.user.dto.response.NicknameResponseDTO;
 import com.example.lionsforest.domain.user.dto.response.UserInfoResponseDTO;
 import com.example.lionsforest.domain.user.dto.request.UserUpdateRequestDTO;
 import com.example.lionsforest.domain.user.repository.UserRepository;
@@ -8,10 +9,16 @@ import com.example.lionsforest.global.common.S3UploadService;
 import com.example.lionsforest.global.exception.BusinessException;
 import com.example.lionsforest.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 

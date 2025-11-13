@@ -27,6 +27,7 @@ public class AuthService {
     private final MemberWhitelistValidator whitelistValidator;
     private final JwtTokenProvider jwtTokenProvider;
     private final FirebaseTokenVerifier firebaseTokenVerifier;
+    private final NicknameService nicknameService;
 
     public LoginResponseDTO googleLoginOrRegister(LoginRequestDTO request) {
 
@@ -55,6 +56,8 @@ public class AuthService {
 
         if (optionalUser.isEmpty()) {
             user = userInfo.toEntity();
+            String userNickname = nicknameService.generateRandomNickname(null);
+            user.setNickname(userNickname);
             userRepository.save(user);
             isNewUser = true;
             System.out.println("새 유저 생성!");
