@@ -6,10 +6,15 @@ import com.example.lionsforest.domain.user.dto.UserUpdateRequestDTO;
 import com.example.lionsforest.domain.user.service.UserService;
 import com.example.lionsforest.global.config.PrincipalHandler;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -48,10 +53,16 @@ public class UserController {
     }
 
     //내 정보 수정
-    @PatchMapping("/me")
+    @PatchMapping(value = "/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "내 정보 수정", description = "마이페이지에서 내 유저 정보를 수정합니다")
+    @RequestBody(
+            content = @Content(
+                    mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                    schema = @Schema(implementation = UserUpdateRequestDTO.class)
+            )
+    )
     public ResponseEntity<UserInfoResponseDTO> updateUser(
-            @RequestBody @Valid UserUpdateRequestDTO request) {
+            @ModelAttribute UserUpdateRequestDTO request) {
         Long authenticatedUserId = PrincipalHandler.getUserId();
 
         UserInfoResponseDTO updatedUser = userService.updateUserInfo(authenticatedUserId, request);
