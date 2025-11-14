@@ -1,16 +1,14 @@
 package com.example.lionsforest.domain.user.service;
 
 import com.example.lionsforest.domain.user.User;
-import com.example.lionsforest.domain.user.dto.LoginRequestDTO;
-import com.example.lionsforest.domain.user.dto.LoginResponseDTO;
-import com.example.lionsforest.domain.user.dto.TokenResponseDTO;
-import com.example.lionsforest.domain.user.dto.UserInfoDTO;
+import com.example.lionsforest.domain.user.dto.request.LoginRequestDTO;
+import com.example.lionsforest.domain.user.dto.response.LoginResponseDTO;
+import com.example.lionsforest.domain.user.dto.response.TokenResponseDTO;
+import com.example.lionsforest.domain.user.dto.request.UserInfoRequestDTO;
 import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.global.component.FirebaseTokenVerifier;
-import com.example.lionsforest.global.component.GoogleTokenVerifier;
 import com.example.lionsforest.global.component.MemberWhitelistValidator;
 import com.example.lionsforest.global.jwt.JwtTokenProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,13 +27,14 @@ public class AuthService {
     private final MemberWhitelistValidator whitelistValidator;
     private final JwtTokenProvider jwtTokenProvider;
     private final FirebaseTokenVerifier firebaseTokenVerifier;
+    private final NicknameService nicknameService;
 
     public LoginResponseDTO googleLoginOrRegister(LoginRequestDTO request) {
 
         //request DTO에서 idToken 꺼내기
         String idToken = request.getIdToken();
         //firebasetokenverifier가 토큰 검증 -> 사용자 정보 추출
-        UserInfoDTO userInfo;
+        UserInfoRequestDTO userInfo;
         try{
             userInfo = firebaseTokenVerifier.verifyIdToken(idToken);
         }catch(AuthenticationException e){
@@ -57,6 +56,8 @@ public class AuthService {
 
         if (optionalUser.isEmpty()) {
             user = userInfo.toEntity();
+            String userNickname = nicknameService.generateRandomNickname(null);
+            user.setNickname(userNickname);
             userRepository.save(user);
             isNewUser = true;
             System.out.println("새 유저 생성!");

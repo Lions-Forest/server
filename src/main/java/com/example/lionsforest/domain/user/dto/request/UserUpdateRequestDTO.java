@@ -1,4 +1,4 @@
-package com.example.lionsforest.domain.user.dto;
+package com.example.lionsforest.domain.user.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

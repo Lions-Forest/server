@@ -1,6 +1,6 @@
 package com.example.lionsforest.global.component;
 
-import com.example.lionsforest.domain.user.dto.UserInfoDTO;
+import com.example.lionsforest.domain.user.dto.request.UserInfoRequestDTO;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
@@ -10,7 +10,7 @@ import javax.naming.AuthenticationException;
 
 @Component
 public class FirebaseTokenVerifier {
-    public UserInfoDTO verifyIdToken(String firebaseIdToken) throws AuthenticationException {
+    public UserInfoRequestDTO verifyIdToken(String firebaseIdToken) throws AuthenticationException {
         try {
             //1. Firebase Admin SDK로 토큰 검증
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseIdToken);
@@ -22,7 +22,7 @@ public class FirebaseTokenVerifier {
             String uid = decodedToken.getUid(); //firebase 고유 uid
 
             //3. AuthService가 사용하던 UserInfoDTO로 변환
-            return UserInfoDTO.builder()
+            return UserInfoRequestDTO.builder()
                     .name(name)
                     .email(email)
                     .profile_photo(profilePhoto)

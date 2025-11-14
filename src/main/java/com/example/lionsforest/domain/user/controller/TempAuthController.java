@@ -1,7 +1,7 @@
 package com.example.lionsforest.domain.user.controller;
 
 import com.example.lionsforest.domain.user.User;
-import com.example.lionsforest.domain.user.dto.TokenResponseDTO;
+import com.example.lionsforest.domain.user.dto.response.TokenResponseDTO;
 import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.global.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;

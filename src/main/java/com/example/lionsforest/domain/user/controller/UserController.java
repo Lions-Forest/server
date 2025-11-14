@@ -1,8 +1,10 @@
 package com.example.lionsforest.domain.user.controller;
 
 
-import com.example.lionsforest.domain.user.dto.UserInfoResponseDTO;
-import com.example.lionsforest.domain.user.dto.UserUpdateRequestDTO;
+import com.example.lionsforest.domain.user.dto.response.NicknameResponseDTO;
+import com.example.lionsforest.domain.user.dto.response.UserInfoResponseDTO;
+import com.example.lionsforest.domain.user.dto.request.UserUpdateRequestDTO;
+import com.example.lionsforest.domain.user.service.NicknameService;
 import com.example.lionsforest.domain.user.service.UserService;
 import com.example.lionsforest.global.config.PrincipalHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,13 +12,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +26,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final NicknameService nicknameService;
 
     //유저 목록 조회
     @GetMapping
@@ -67,5 +66,14 @@ public class UserController {
 
         UserInfoResponseDTO updatedUser = userService.updateUserInfo(authenticatedUserId, request);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    //랜덤 닉네임 생성
+    @GetMapping("/me/random-nickname")
+    @Operation(summary = "랜덤 닉네임 생성", description = "마이페이지에서 랜덤 닉네임을 생성합니다")
+    public ResponseEntity<NicknameResponseDTO> createNickname(){
+        Long authenticatedUserId = PrincipalHandler.getUserId();
+        NicknameResponseDTO createdNickname = nicknameService.updateRandomNickname(authenticatedUserId);
+        return ResponseEntity.ok(createdNickname);
     }
 }
