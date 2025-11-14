@@ -215,6 +215,16 @@ public class ReviewService {
         return ReviewGetResponseDto.fromEntity(review);
     }
 
+    // 후기 전체 조회
+    @Transactional(readOnly = true)
+    public List<ReviewGetResponseDto> getAllReview(){
+        List<Review> reviews = reviewRepository.findAll();
+
+        return reviews.stream()
+                .map(ReviewGetResponseDto::fromEntity)
+                .toList();
+    }
+
 
     // 모임별 후기 전체 조회
     @Transactional(readOnly = true)

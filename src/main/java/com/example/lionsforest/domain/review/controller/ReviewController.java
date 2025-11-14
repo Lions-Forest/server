@@ -107,6 +107,13 @@ public class ReviewController {
 
     }
 
+    // 후기 전체 조회
+    @GetMapping
+    @Operation(summary = "후기 전체 조회", description = "전체 후기를 조회합니다")
+    public ResponseEntity<List<ReviewGetResponseDto>> getAllReview(){
+        return ResponseEntity.ok(reviewService.getAllReview());
+    }
+
     // 모임별 후기 조회
     @GetMapping("by-group/{group_id}/")
     @Operation(summary = "모임별 후기 조회", description = "특정 모임(By group_id)에 대한 후기를 조회합니다")
