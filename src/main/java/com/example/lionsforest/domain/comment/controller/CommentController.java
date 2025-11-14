@@ -1,8 +1,10 @@
 package com.example.lionsforest.domain.comment.controller;
 
 import com.example.lionsforest.domain.comment.dto.request.CommentRequestDto;
+import com.example.lionsforest.domain.comment.dto.response.CommentLikeResponseDTO;
 import com.example.lionsforest.domain.comment.dto.response.CommentResponseDto;
 import com.example.lionsforest.domain.comment.service.CommentService;
+import com.example.lionsforest.global.config.PrincipalHandler;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -79,4 +81,15 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getCommentsByGroupId(groupId));
     }
 */
+
+    //댓글 좋아요 눌렀는지 확인
+    @GetMapping("{comment_id}/liked")
+    @Operation(summary = "특정 댓글 좋아요 확인", description = "해당 유저가 comment_id에 좋아요를 눌렀는지 확인합니다")
+    public ResponseEntity<CommentLikeResponseDTO> viewCommentLike(
+            @PathVariable("comment_id") Long commentId
+    ){
+        Long authenticatedUserId = PrincipalHandler.getUserId();
+        CommentLikeResponseDTO response = commentService.isLiked(commentId, authenticatedUserId);
+        return ResponseEntity.ok(response);
+    }
 }
