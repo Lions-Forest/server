@@ -11,17 +11,14 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 public class UserUpdateRequestDTO {
-    @NotBlank
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "새로운_닉네임")
     private String nickname;
 
-    @NotBlank
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "한 줄 소개")
     private String bio;
 
     private MultipartFile photo;
 
-    @NotNull
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean removePhoto;
 }
