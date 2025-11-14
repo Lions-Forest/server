@@ -76,7 +76,7 @@ public class SecurityConfig {
                 "https://api.lions-forest.p-e.kr",
                 "http://localhost:8080"
         ));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); //허용할 http 메서드
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")); //허용할 http 메서드
         config.setAllowedHeaders(Arrays.asList("*")); //모든 http 헤더 허용
         config.setAllowCredentials(true); // 자격 증명(쿠키, authorization 헤더) 허용
         config.setMaxAge(3600L); //요청 캐시 시간: 1시간

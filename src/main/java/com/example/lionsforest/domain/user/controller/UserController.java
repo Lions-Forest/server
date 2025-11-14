@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +62,7 @@ public class UserController {
             )
     )
     public ResponseEntity<UserInfoResponseDTO> updateUser(
-            @ModelAttribute UserUpdateRequestDTO request) {
+            @ModelAttribute @Valid UserUpdateRequestDTO request) {
         Long authenticatedUserId = PrincipalHandler.getUserId();
 
         UserInfoResponseDTO updatedUser = userService.updateUserInfo(authenticatedUserId, request);
