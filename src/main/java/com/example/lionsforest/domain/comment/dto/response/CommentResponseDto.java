@@ -30,7 +30,7 @@ public class CommentResponseDto {
                 .userName(comment.getUser().getName())
                 .userNickName(comment.getUser().getNickname())
                 .content(comment.getContent())
-                .likeCount(comment.getLiked_by_users().size()) // 좋아요 수
+                .likeCount(comment.getLikedByUsers().size()) // 좋아요 수
                 .createdAt(comment.getCreatedAt())
                 .build();
     }

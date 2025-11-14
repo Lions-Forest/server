@@ -36,5 +36,5 @@ public class Comment extends BaseTimeEntity {
     //이 댓글을 좋아요한 유저
     @Builder.Default
     @ManyToMany(mappedBy = "liked_comments")
-    private Set<User> liked_by_users = new HashSet<>();
+    private Set<User> likedByUsers = new HashSet<>();
 }

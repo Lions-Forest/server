@@ -2,6 +2,7 @@ package com.example.lionsforest.domain.comment.service;
 
 import com.example.lionsforest.domain.comment.Comment;
 import com.example.lionsforest.domain.comment.dto.request.CommentRequestDto;
+import com.example.lionsforest.domain.comment.dto.response.CommentLikeResponseDTO;
 import com.example.lionsforest.domain.comment.dto.response.CommentResponseDto;
 import com.example.lionsforest.domain.comment.repository.CommentRepository;
 import com.example.lionsforest.domain.group.Group;
@@ -14,6 +15,8 @@ import com.example.lionsforest.domain.notification.Notification;
 import com.example.lionsforest.domain.notification.repository.NotificationRepository;
 import com.example.lionsforest.domain.user.User;
 import com.example.lionsforest.domain.user.repository.UserRepository;
+import com.example.lionsforest.global.exception.BusinessException;
+import com.example.lionsforest.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -154,5 +157,16 @@ public class CommentService {
                 .toList();
     }
  */
+
+    //좋아요 눌렀는지 확인
+    public CommentLikeResponseDTO isLiked(Long commentId, Long userId){
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(()->new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
+
+        // 현재 유저의 좋아요 상태 확인 (메서드 이름 쿼리 사용)
+        boolean isLiked = commentRepository.existsByCommentIdAndLikedByUsers_Id(commentId, userId);
+
+        return CommentLikeResponseDTO.of(isLiked);
+    }
 
 }
