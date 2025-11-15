@@ -83,7 +83,7 @@ public class CommentController {
 */
 
     //댓글 좋아요 눌렀는지 확인
-    @GetMapping("{comment_id}/liked")
+    @GetMapping("{comment_id}/like/status")
     @Operation(summary = "특정 댓글 좋아요 확인", description = "해당 유저가 comment_id에 좋아요를 눌렀는지 확인합니다")
     public ResponseEntity<CommentLikeResponseDTO> viewCommentLike(
             @PathVariable("comment_id") Long commentId
