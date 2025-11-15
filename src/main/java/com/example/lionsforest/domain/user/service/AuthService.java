@@ -56,7 +56,7 @@ public class AuthService {
 
         if (optionalUser.isEmpty()) {
             user = userInfo.toEntity();
-            String userNickname = nicknameService.generateRandomNickname(null);
+            String userNickname = nicknameService.generateRandomNickname("");
             user.setNickname(userNickname);
             userRepository.save(user);
             isNewUser = true;

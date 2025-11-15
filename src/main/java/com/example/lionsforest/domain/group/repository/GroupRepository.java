@@ -2,6 +2,7 @@ package com.example.lionsforest.domain.group.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.lionsforest.domain.group.Group;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -16,4 +17,8 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     List<Group> findAllByLeaderId(Long leaderId);
 
     List<Group> findByMeetingAtBetween(LocalDateTime startRange, LocalDateTime endRange);
+
+    @Modifying
+    @Query("UPDATE Group m SET m.state = 'CLOSED' WHERE m.meetingAt <= :currentTime AND m.state = 'OPEN'")
+    int closeMeetingByTime(@Param("currentTime") LocalDateTime currentTime);
 }
