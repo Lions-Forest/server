@@ -4,6 +4,7 @@ import com.example.lionsforest.domain.group.dto.request.GroupRequestDto;
 import com.example.lionsforest.domain.group.dto.request.GroupUpdateRequestDto;
 import com.example.lionsforest.domain.group.dto.response.GroupGetResponseDto;
 import com.example.lionsforest.domain.group.dto.response.GroupResponseDto;
+import com.example.lionsforest.domain.group.dto.response.GroupSimpleInfoResponseDto;
 import com.example.lionsforest.domain.group.service.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -136,4 +137,13 @@ public class GroupController {
         return ResponseEntity.ok("사진이 성공적으로 수정되었습니다.");
     }
     */
+
+    //모임 정보 간단 조회
+    @GetMapping("{group_id}/simple")
+    @Operation(summary = "모임 정보 간단 조회", description = "후기 작성 시 상단에 표시할 특정 모임의 정보를 반환합니다.")
+    public ResponseEntity<GroupSimpleInfoResponseDto> getGroupSimpleInfo(@PathVariable("group_id") Long groupId){
+        GroupSimpleInfoResponseDto response = groupService.getGroupSimpleInfo(groupId);
+        return ResponseEntity.ok(response);
+    }
+
 }

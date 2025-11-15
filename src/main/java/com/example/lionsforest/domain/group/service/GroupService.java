@@ -5,6 +5,7 @@ import com.example.lionsforest.domain.group.Participation;
 import com.example.lionsforest.domain.group.dto.request.GroupRequestDto;
 import com.example.lionsforest.domain.group.dto.response.GroupGetResponseDto;
 import com.example.lionsforest.domain.group.dto.response.GroupResponseDto;
+import com.example.lionsforest.domain.group.dto.response.GroupSimpleInfoResponseDto;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
 import com.example.lionsforest.domain.group.dto.request.GroupUpdateRequestDto;
 import com.example.lionsforest.domain.group.GroupPhoto;
@@ -17,9 +18,12 @@ import com.example.lionsforest.domain.user.User;
 
 import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.global.common.S3UploadService;
+import com.example.lionsforest.global.exception.BusinessException;
+import com.example.lionsforest.global.exception.ErrorCode;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -266,5 +270,12 @@ public class GroupService {
         if(updatedCount > 0){
             System.out.println(updatedCount + "개의 모임이 마감 처리되었습니다.");
         }
+    }
+
+    //모임 간단 정보 조회
+    public GroupSimpleInfoResponseDto getGroupSimpleInfo(Long groupId){
+        Group group = groupRepository.findByIdWithPhotos(groupId)
+                .orElseThrow(()->new BusinessException(ErrorCode.GROUP_NOT_FOUND));
+        return GroupSimpleInfoResponseDto.fromEntity(group);
     }
 }
