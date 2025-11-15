@@ -26,7 +26,10 @@ public enum ErrorCode {
     NICKNAME_GENERATION_FAILED(HttpStatus.NO_CONTENT, "NICKNAME_GENERATION_FAILED", "새로운 닉네임 생성에 실패했습니다."),
 
     //댓글 조회 실패
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_NOT_FOUND", "댓글 조회에 실패했습니다");
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_NOT_FOUND", "댓글 조회에 실패했습니다"),
+
+    //모임 없음
+    GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "GROUP_NOT_FOUND", "모임 조회에 실패했습니다");
 
     private final HttpStatus status;
     private final String code;
