@@ -258,4 +258,13 @@ public class GroupService {
     }
     */
 
+    //시간 지난 모임 state 변경
+    @Transactional
+    public void closeExpiredMeetings(){
+        int updatedCount = groupRepository.closeMeetingByTime(LocalDateTime.now());
+
+        if(updatedCount > 0){
+            System.out.println(updatedCount + "개의 모임이 마감 처리되었습니다.");
+        }
+    }
 }
