@@ -112,6 +112,8 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
 
+        Group group = comment.getGroup();
+
         // @ManyToMany의 주인(User) 엔티티를 가져와야 함
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
@@ -135,9 +137,13 @@ public class CommentService {
                 if (firstPhotoOpt.isPresent()) {
                     photoPath = firstPhotoOpt.get().getPhoto();
                 }
+
+                String dateStr = group.getMeetingAt().format(DateTimeFormatter.ofPattern("yy.MM.dd"));
+                String content = "♥️ ["+ dateStr + "] " + group.getTitle() + " 내가 작성한 댓글에 하트가 달렸어요.";
+
                 Notification notification = Notification.builder()
                         .user(author)
-                        .content("♥️ 내가 작성한 댓글에 하트가 달렸어요.")
+                        .content(content)
                         .photo(photoPath)
                         .build();
                 notificationRepository.save(notification);
