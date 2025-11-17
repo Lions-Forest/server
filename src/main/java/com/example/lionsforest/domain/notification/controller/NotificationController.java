@@ -49,5 +49,6 @@ public class NotificationController {
         notification.markRead();  // read 필드를 true로
         notificationRepository.save(notification);
     }
+
 }
 
