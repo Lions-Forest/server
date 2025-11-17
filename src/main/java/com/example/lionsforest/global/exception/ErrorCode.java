@@ -29,7 +29,35 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_NOT_FOUND", "댓글 조회에 실패했습니다"),
 
     //모임 없음
-    GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "GROUP_NOT_FOUND", "모임 조회에 실패했습니다");
+    GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "GROUP_NOT_FOUND", "모임 조회에 실패했습니다"),
+
+    // 권한 없음
+    GROUP_PERMISSION_DENIED(HttpStatus.FORBIDDEN, "GROUP_PERMISSION_DENIED", "해당 모임에 대한 권한이 없습니다."),
+
+    // 모임 취소 시점 제한
+    GROUP_CANCEL_TIME_EXCEEDED(HttpStatus.BAD_REQUEST, "GROUP_CANCEL_TIME_EXCEEDED", "모임 시작 이후에는 취소할 수 없습니다."),
+
+    // 모임 중복 신청 제한
+    PARTICIPATION_ALREADY_EXISTS(HttpStatus.CONFLICT, "PARTICIPATION_ALREADY_EXISTS", "이미 참여 중인 모임입니다."),
+
+    // 모임 인원 제한
+    GROUP_CAPACITY_FULL(HttpStatus.BAD_REQUEST, "GROUP_CAPACITY_FULL", "모임 인원이 가득 찼습니다."),
+
+    // 모임장은 탈퇴할 수 없음
+    GROUP_LEADER_CANNOT_LEAVE(HttpStatus.FORBIDDEN, "GROUP_LEADER_CANNOT_LEAVE", "모임장은 모임을 탈퇴할 수 없습니다."),
+
+    // 참여하지 않은 모임
+    GROUP_PARTICIPATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "GROUP_PARTICIPATION_NOT_FOUND", "참여하지 않은 모임입니다."),
+
+    // 권한 없음
+    COMMENT_PERMISSION_DENIED(HttpStatus.FORBIDDEN, "COMMENT_PERMISSION_DENIED", "해당 댓글에 대한 권한이 없습니다."),
+
+    // 권한 없음
+    REVIEW_PERMISSION_DENIED(HttpStatus.FORBIDDEN, "REVIEW_PERMISSION_DENIED", "해당 후기에 대한 권한이 없습니다."),
+
+    // 후기 없음
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW_NOT_FOUND", "후기 조회에 실패했습니다");
+
 
     private final HttpStatus status;
     private final String code;

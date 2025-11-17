@@ -114,29 +114,6 @@ public class GroupController {
 
         return ResponseEntity.ok("모임이 성공적으로 삭제되었습니다.");
     }
-    /*
-    // 모임 사진 일괄 수정 (추가 + 삭제)
-    @PostMapping(value = "/{groupId}/photos/manage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> manageGroupPhotos(
-            @PathVariable Long groupId,
-            // 새로 추가할 파일 목록
-            @RequestPart(value = "addPhotos", required = false) List<MultipartFile> addPhotos,
-            // 삭제할 사진 ID 목록 (예: ?deletePhotoIds=1&deletePhotoIds=3)
-            @RequestPart(value = "deletePhotoIds", required = false) List<Long> deletePhotoIds,
-            @RequestPart("userId") Long userId // [임시 인증]
-    ) {
-        // [임시 인증]
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
-        /* 파라미터에 @AuthenticationPrincipal UserDetailsImpl userDetails 추가
-        User user = userDetails.getUser(); // 진짜 인증(JWT)
-
-        // 서비스의 새 메서드 호출
-        groupService.managePhotos(groupId, addPhotos, deletePhotoIds, user);
-
-        return ResponseEntity.ok("사진이 성공적으로 수정되었습니다.");
-    }
-    */
 
     //모임 정보 간단 조회
     @GetMapping("{group_id}/simple")

@@ -74,13 +74,6 @@ public class CommentController {
         String message = commentService.toggleLike(commentId, loginUserId);
         return ResponseEntity.ok(message);
     }
-/*
-    // 유저별 댓글 조회
-    @GetMapping("/{group_id}")
-    public ResponseEntity<List<CommentResponseDto>> getUser(@PathVariable Long groupId){
-        return ResponseEntity.ok(commentService.getCommentsByGroupId(groupId));
-    }
-*/
 
     //댓글 좋아요 눌렀는지 확인
     @GetMapping("{comment_id}/like/status")
