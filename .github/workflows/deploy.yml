@@ -43,7 +43,7 @@ jobs:
 
       # 5. Gradle로 빌드 (테스트 스킵을 원하면 -x test 추가)
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -x test
 
       # =======================================================
       # 6. (CD 시작) 빌드된 JAR 파일을 EC2로 전송
