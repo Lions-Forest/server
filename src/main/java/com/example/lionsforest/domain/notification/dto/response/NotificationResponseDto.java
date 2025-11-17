@@ -1,6 +1,7 @@
 package com.example.lionsforest.domain.notification.dto.response;
 
 import com.example.lionsforest.domain.notification.Notification;
+import com.example.lionsforest.domain.notification.TargetType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,8 @@ public class NotificationResponseDto {
     private Long id;
     private String content;
     private String photo;
+    private Long targetId;
+    private TargetType targetType;
     private boolean read;
     private LocalDateTime createdAt;
 
@@ -21,6 +24,8 @@ public class NotificationResponseDto {
                 .id(notification.getId())
                 .content(notification.getContent())
                 .photo(notification.getPhoto())
+                .targetId(notification.getTargetId())
+                .targetType(notification.getTargetType())
                 .read(notification.isRead())
                 .createdAt(notification.getCreatedAt())
                 .build();

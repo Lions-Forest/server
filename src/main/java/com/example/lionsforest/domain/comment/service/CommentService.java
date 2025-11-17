@@ -12,6 +12,7 @@ import com.example.lionsforest.domain.group.repository.GroupPhotoRepository;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
 import com.example.lionsforest.domain.group.repository.ParticipationRepository;
 import com.example.lionsforest.domain.notification.Notification;
+import com.example.lionsforest.domain.notification.TargetType;
 import com.example.lionsforest.domain.notification.repository.NotificationRepository;
 import com.example.lionsforest.domain.user.User;
 import com.example.lionsforest.domain.user.repository.UserRepository;
@@ -72,6 +73,8 @@ public class CommentService {
                         .user(part.getUser())
                         .content(content)
                         .photo(photoPath)
+                        .targetId(comment.getCommentId())
+                        .targetType(TargetType.COMMENT)
                         .build();
                 notificationRepository.save(notification);
             }
@@ -145,6 +148,8 @@ public class CommentService {
                         .user(author)
                         .content(content)
                         .photo(photoPath)
+                        .targetId(commentId)
+                        .targetType(TargetType.COMMENT)
                         .build();
                 notificationRepository.save(notification);
             }

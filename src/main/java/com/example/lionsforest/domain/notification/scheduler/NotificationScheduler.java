@@ -7,6 +7,7 @@ import com.example.lionsforest.domain.group.repository.GroupPhotoRepository;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
 import com.example.lionsforest.domain.group.repository.ParticipationRepository;
 import com.example.lionsforest.domain.notification.Notification;
+import com.example.lionsforest.domain.notification.TargetType;
 import com.example.lionsforest.domain.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -57,6 +58,8 @@ public class NotificationScheduler {
                             .user(part.getUser())
                             .content(content)
                             .photo(photoPath)
+                            .targetId(group.getId())
+                            .targetType(TargetType.GROUP)
                             .build();
                     notificationRepository.save(notification);
                 }

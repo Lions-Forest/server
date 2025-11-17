@@ -27,8 +27,14 @@ public class Notification extends BaseTimeEntity {
 
     private String photo;
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean isRead = false;
+
+    private Long targetId;
+
+    @Enumerated(EnumType.STRING)
+    private TargetType targetType;
 
     public void markRead() { this.isRead = true; }
 }
