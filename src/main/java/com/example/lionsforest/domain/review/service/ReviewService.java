@@ -7,6 +7,7 @@ import com.example.lionsforest.domain.group.repository.GroupPhotoRepository;
 import com.example.lionsforest.domain.group.repository.GroupRepository;
 import com.example.lionsforest.domain.group.repository.ParticipationRepository;
 import com.example.lionsforest.domain.notification.Notification;
+import com.example.lionsforest.domain.notification.TargetType;
 import com.example.lionsforest.domain.notification.repository.NotificationRepository;
 import com.example.lionsforest.domain.review.Review;
 import com.example.lionsforest.domain.review.ReviewPhoto;
@@ -106,6 +107,8 @@ public class ReviewService {
                         .user(part.getUser())
                         .content(content)
                         .photo(photoPath)
+                        .targetId(review.getId())
+                        .targetType(TargetType.REVIEW)
                         .build();
                 notificationRepository.save(notification);
             }
