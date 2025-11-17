@@ -7,8 +7,11 @@ import com.example.lionsforest.domain.user.dto.response.TokenResponseDTO;
 import com.example.lionsforest.domain.user.dto.request.UserInfoRequestDTO;
 import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.global.component.FirebaseTokenVerifier;
+import com.example.lionsforest.global.component.GoogleTokenVerifier;
 import com.example.lionsforest.global.component.MemberWhitelistValidator;
 import com.example.lionsforest.global.jwt.JwtTokenProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,7 @@ public class AuthService {
     private final MemberWhitelistValidator whitelistValidator;
     private final JwtTokenProvider jwtTokenProvider;
     private final FirebaseTokenVerifier firebaseTokenVerifier;
+    private final GoogleTokenVerifier googleTokenVerifier;
     private final NicknameService nicknameService;
 
     public LoginResponseDTO googleLoginOrRegister(LoginRequestDTO request) {
@@ -34,13 +38,7 @@ public class AuthService {
         //request DTO에서 idToken 꺼내기
         String idToken = request.getIdToken();
         //firebasetokenverifier가 토큰 검증 -> 사용자 정보 추출
-        UserInfoRequestDTO userInfo;
-        try{
-            userInfo = firebaseTokenVerifier.verifyIdToken(idToken);
-        }catch(AuthenticationException e){
-            log.error("Invalid ID Token: {}", e.getMessage());
-            throw new SecurityException("유효하지 않은 토큰입니다.", e);
-        }
+        UserInfoRequestDTO userInfo = googleTokenVerifier.verify(idToken);
         String name = userInfo.getName();
         String email = userInfo.getEmail();
 
@@ -66,6 +64,17 @@ public class AuthService {
             System.out.println("이미 존재하는 유저");
         }
 
+        // Firebase 커스텀 토큰 생성
+        String firebaseToken;
+        try{
+            //우리 DB의 userid를 firebase의 uid로 사용
+            String uid = String.valueOf(user.getId());
+            firebaseToken = FirebaseAuth.getInstance().createCustomToken(uid);
+        }catch(FirebaseAuthException e){
+            log.error("Firebase 커스텀 토큰 생성 실패(User ID: {}): {}", user.getId(), e.getMessage());
+            throw new RuntimeException("Firebase 토큰 생성 중 오류가 발생했습니다.", e);
+        }
+
         // JWT 토큰 생성 (반환 타입이 TokenResponse DTO임)
         TokenResponseDTO tokens = jwtTokenProvider.createTokens(user.getId(), user.getEmail());
 
@@ -76,6 +85,7 @@ public class AuthService {
                 .refreshToken(tokens.getRefreshToken()) // TokenResponse DTO의 getter
                 .isNewUser(isNewUser)
                 .nickname(user.getNickname())
+                .firebaseToken(firebaseToken)
                 .build();
     }
 }
