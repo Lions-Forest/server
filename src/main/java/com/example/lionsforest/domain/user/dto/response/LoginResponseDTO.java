@@ -12,4 +12,5 @@ public class LoginResponseDTO {
     private String refreshToken;
     private boolean isNewUser; //최초 가입 여부
     private String nickname;
+    private String firebaseToken;
 }
