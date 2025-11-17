@@ -7,6 +7,7 @@ import com.example.lionsforest.domain.user.dto.response.TokenResponseDTO;
 import com.example.lionsforest.domain.user.dto.request.UserInfoRequestDTO;
 import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.global.component.FirebaseTokenVerifier;
+import com.example.lionsforest.global.component.GoogleOAuthService;
 import com.example.lionsforest.global.component.GoogleTokenVerifier;
 import com.example.lionsforest.global.component.MemberWhitelistValidator;
 import com.example.lionsforest.global.jwt.JwtTokenProvider;
@@ -14,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,16 +31,28 @@ public class AuthService {
     private final UserRepository userRepository;
     private final MemberWhitelistValidator whitelistValidator;
     private final JwtTokenProvider jwtTokenProvider;
-    private final FirebaseTokenVerifier firebaseTokenVerifier;
     private final GoogleTokenVerifier googleTokenVerifier;
     private final NicknameService nicknameService;
+    private final GoogleOAuthService googleOAuthService;
 
-    public LoginResponseDTO googleLoginOrRegister(LoginRequestDTO request) {
+    @Value("%{google.auth.client-id}")
+    private String clientId;
 
-        //request DTO에서 idToken 꺼내기
-        String idToken = request.getIdToken();
-        //firebasetokenverifier가 토큰 검증 -> 사용자 정보 추출
-        UserInfoRequestDTO userInfo = googleTokenVerifier.verify(idToken);
+    @Value("${google.auth.client-secret}")
+    private String clientSecret;
+
+    @Value("${google.auth.redirect-uri}")
+    private String redirectUri;
+
+    //code를 받아 로그인 처리하는 메소드(메인)
+    public LoginResponseDTO loginWithGoogleCode(LoginRequestDTO loginRequestDTO) {
+        UserInfoRequestDTO userInfo = googleOAuthService.getUserInfo(loginRequestDTO);
+
+        return processUserLogin(userInfo);
+    }
+
+    public LoginResponseDTO processUserLogin(UserInfoRequestDTO userInfo) {
+
         String name = userInfo.getName();
         String email = userInfo.getEmail();
 

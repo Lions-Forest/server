@@ -4,5 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class LoginRequestDTO {
-    private String idToken;
+    private String code;
+    private String redirectUri;
 }

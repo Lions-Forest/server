@@ -27,7 +27,7 @@ public class AuthController {
     public ResponseEntity<LoginResponseDTO> googleLogin(
             @Valid @RequestBody LoginRequestDTO request) {
 
-        LoginResponseDTO response = authService.googleLoginOrRegister(request);
+        LoginResponseDTO response = authService.loginWithGoogleCode(request);
         return ResponseEntity.ok(response);
     }
 }
