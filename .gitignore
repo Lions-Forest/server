@@ -41,3 +41,4 @@ application.yml
 src/main/resources/application-secret.yml
 src/main/resources/members.txt
 src/main/resources/firebase-service-account.json
+!src/test/resources/application.yml
