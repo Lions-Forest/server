@@ -14,6 +14,8 @@ import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.domain.group.Participation;
 import com.example.lionsforest.domain.group.dto.response.ParticipationResponseDto;
 
+import com.example.lionsforest.global.exception.BusinessException;
+import com.example.lionsforest.global.exception.ErrorCode;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,21 +37,21 @@ public class ParticipationService {
     @Transactional
     public ParticipationResponseDto joinGroup(Long groupId, Long userId){
         Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모임입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_NOT_FOUND));
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 중복 참여 체크
         if(participationRepository.existsByGroupAndUser(group, user)) {
-            throw new IllegalArgumentException("이미 참여 신청한 모임입니다.");
+            throw new BusinessException(ErrorCode.PARTICIPATION_ALREADY_EXISTS);
         }
 
         // 인원 제한 체크
         long currentCount = participationRepository.countByGroupId(groupId);
         int capacity = group.getCapacity();
         if(currentCount >= capacity) {
-            throw new IllegalArgumentException("모임 인원이 가득 찼습니다.");
+            throw new BusinessException(ErrorCode.GROUP_CAPACITY_FULL);
         }
 
         Participation participation = Participation.builder()
@@ -97,18 +99,18 @@ public class ParticipationService {
     @Transactional
     public void leaveGroup(Long groupId, Long userId) {
         Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모임입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_NOT_FOUND));
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         if (group.getLeader().getId().equals(userId)) {
-            throw new IllegalArgumentException("모임장은 모임을 탈퇴할 수 없습니다.");
+            throw new BusinessException(ErrorCode.GROUP_LEADER_CANNOT_LEAVE);
         }
 
         Participation participation = participationRepository
                 .findByGroupIdAndUserId(groupId, user.getId())
-                .orElseThrow(() -> new IllegalArgumentException("참여하지 않은 모임입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_PARTICIPATION_NOT_FOUND));
 
         participationRepository.delete(participation);
 

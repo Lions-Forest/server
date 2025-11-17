@@ -40,10 +40,10 @@ public class CommentService {
     @Transactional
     public CommentResponseDto createComment(Long groupId, CommentRequestDto dto, Long userId){
         Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모임입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_NOT_FOUND));
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Comment comment = Comment.builder()
                 .group(group)
@@ -84,13 +84,13 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId, Long userId){
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         if (!comment.getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("댓글 작성자만 삭제할 수 있습니다.");
+            throw new BusinessException(ErrorCode.COMMENT_PERMISSION_DENIED);
         }
 
         commentRepository.delete(comment);
@@ -110,13 +110,13 @@ public class CommentService {
     @Transactional
     public String toggleLike(Long commentId, Long userId){
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
 
         Group group = comment.getGroup();
 
         // @ManyToMany의 주인(User) 엔티티를 가져와야 함
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // User 엔티티의 liked_comments Set을 가져옴
         Set<Comment> likedComments = user.getLiked_comments();
@@ -152,17 +152,6 @@ public class CommentService {
             return "좋아요가 추가되었습니다.";
         }
     }
-/*
-    // 유저별 댓글 조회
-    @Transactional(readOnly = true)
-    public List<CommentResponseDto> getCommentsByUserId(Long userId){
-        List<Comment> comments = commentRepository.findByUserId(userId);
-
-        return comments.stream()
-                .map(CommentResponseDto::fromEntity)
-                .toList();
-    }
- */
 
     //좋아요 눌렀는지 확인
     public CommentLikeResponseDTO isLiked(Long commentId, Long userId){

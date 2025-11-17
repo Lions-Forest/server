@@ -20,6 +20,8 @@ import com.example.lionsforest.domain.user.User;
 import com.example.lionsforest.domain.user.repository.UserRepository;
 import com.example.lionsforest.global.common.S3UploadService;
 
+import com.example.lionsforest.global.exception.BusinessException;
+import com.example.lionsforest.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,12 +50,12 @@ public class ReviewService {
                                           ReviewRequestDto dto,
                                           Long userId){
         Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모임입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_NOT_FOUND));
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         if (!participationRepository.existsByGroupIdAndUserId(groupId, userId)) {
-            throw new IllegalArgumentException("참여한 모임에만 후기를 작성할 수 있습니다.");
+            throw new BusinessException(ErrorCode.GROUP_PARTICIPATION_NOT_FOUND);
         }
 
         Review review = Review.builder()
@@ -116,14 +118,14 @@ public class ReviewService {
     @Transactional
     public void deleteReview(Long reviewId, Long userId){
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Review review = reviewRepository
                 .findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 후기입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_FOUND));
 
         if(!review.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException("작성자만 후기를 삭제할 수 있습니다.");
+            throw new BusinessException(ErrorCode.REVIEW_PERMISSION_DENIED);
         }
 
         if (review.getPhotos() != null) {
@@ -139,10 +141,10 @@ public class ReviewService {
                                           ReviewUpdateRequestDto dto,
                                           Long userId){
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 후기가 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_FOUND));
 
         if (!review.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException("작성자만 후기를 수정할 수 있습니다.");
+            throw new BusinessException(ErrorCode.REVIEW_PERMISSION_DENIED);
         }
 
         if (dto.getContent() != null) {
@@ -211,7 +213,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public ReviewGetResponseDto getReviewById(Long reviewId){
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 후기가 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_FOUND));
         return ReviewGetResponseDto.fromEntity(review);
     }
 
