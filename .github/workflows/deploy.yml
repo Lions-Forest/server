@@ -64,7 +64,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }} # (필수) GitHub Secret에서 가져옴
           port: 22                                # SSH 포트 (기본 22)
           source: "build/libs/*.jar"              # 로컬(GitHub Runner)의 .jar 파일 위치
-          target: ${{ secrets.JAR_PATH_ON_EC2 }}  # 원격(EC2) 서버에 저장될 경로 및 이름
+          target: "/home/ubuntu/server/jars"  # 원격(EC2) 서버에 저장될 경로 및 이름
 
       # =======================================================
       # 7. (CD 완료) EC2에 접속하여 배포 스크립트 실행
