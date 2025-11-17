@@ -69,5 +69,4 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             echo "Starting deployment script..."
-            chmod +x /home/ubuntu/server/deploy.sh  # (경로 주의) EC2에 있는 스크립트에 실행 권한 부여
             /home/ubuntu/server/deploy.sh           # (경로 주의) EC2에 있는 스크립트 실행
