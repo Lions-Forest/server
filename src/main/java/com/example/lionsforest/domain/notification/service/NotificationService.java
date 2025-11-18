@@ -34,7 +34,7 @@ public class NotificationService {
                 .photo(receiver.getProfile_photo())
                 .isRead(false)
                 .targetId(receiverId)
-                .targetType(TargetType.GROUP)
+                .targetType(TargetType.RADAR)
                 .build();
         notificationRepository.save(notification);
 
