@@ -48,11 +48,17 @@ public class UserService {
     public UserInfoResponseDTO updateUserInfo(Long userId, UserUpdateRequestDTO request) {
         User user = findUserById(userId);
 
-        // 닉네임 중복 검사 (변경 시에만)
-        if (request.getNickname() != null &&
-                !request.getNickname().equals(user.getNickname()) &&
-                userRepository.existsByNickname(request.getNickname())) {
-            throw new BusinessException(ErrorCode.NICKNAME_ALREADY_EXISTS);
+        // 닉네임 검사 (변경 시에만)
+        if (request.getNickname() != null){
+            // 길이 검사 - 최대 10자로 제한
+            if(request.getNickname().length() > 10){ //길이 검사
+                throw new BusinessException(ErrorCode.NICKNAME_LENGTH_EXCEEDED);
+            }
+            //증복 검사 - 내 닉네임과 다르면서 + 이미 존재하는 닉네임인지
+            else if(!request.getNickname().equals(user.getNickname()) &&
+                    userRepository.existsByNickname(request.getNickname())){
+                throw new BusinessException(ErrorCode.NICKNAME_ALREADY_EXISTS);
+            }
         }
 
         // 닉네임, 한 줄 소개 업데이트

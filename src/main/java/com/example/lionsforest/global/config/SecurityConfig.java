@@ -73,6 +73,7 @@ public class SecurityConfig {
                 "http://localhost:5173",
                 "https://lionforest-dev.netlify.app",
                 "https://lions-forest.vercel.app",
+                "https://lionforest.netlify.app",
                 //백엔드 주소
                 "https://api.lions-forest.p-e.kr",
                 "http://localhost:8080"

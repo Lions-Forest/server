@@ -2,6 +2,8 @@ package com.example.lionsforest.global.component;
 
 import com.example.lionsforest.domain.user.dto.request.LoginRequestDTO;
 import com.example.lionsforest.domain.user.dto.request.UserInfoRequestDTO;
+import com.example.lionsforest.global.exception.BusinessException;
+import com.example.lionsforest.global.exception.ErrorCode;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
@@ -53,7 +55,7 @@ public class GoogleOAuthService {
 
             //토큰 유효성 검증
             if(!idToken.verifyAudience(Collections.singletonList(clientId))){
-                throw new SecurityException("Google ID Token의 Client ID가 유효하지 않습니다.");
+                throw new BusinessException(ErrorCode.INVALID_GOOGLE_ID_TOKEN);
             }
             GoogleIdToken.Payload payload = idToken.getPayload();
 
@@ -63,7 +65,7 @@ public class GoogleOAuthService {
             String profilePhoto = (String) payload.get("picture");
 
             if(email == null || name == null){
-                throw new SecurityException("Google 토큰에서 이메일 또는 이름 정보를 가져올 수 없습니다.");
+                throw new BusinessException(ErrorCode.GOOGLE_USER_INFO_NOT_FOUND);
             }
 
             return UserInfoRequestDTO.builder()
@@ -73,7 +75,10 @@ public class GoogleOAuthService {
                     .build();
         } catch(IOException e){
             log.error("Google 인증 코드 교환 또는 토큰 파싱 실패: {}", e.getMessage(), e);
-            throw new RuntimeException("Google 인증 중 오류가 발생했습니다.", e);
+            throw new BusinessException(ErrorCode.GOOGLE_SERVER_ERROR);
+        } catch(Exception e){ // 그 외 오류
+            log.error("Google 로그인 중 알 수 없는 오류: {}", e.getMessage(), e);
+            throw new BusinessException(ErrorCode.GOOGLE_LOGIN_FAILED);
         }
     }
 
