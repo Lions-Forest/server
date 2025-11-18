@@ -107,8 +107,8 @@ public class ReviewService {
                         .user(part.getUser())
                         .content(content)
                         .photo(photoPath)
-                        .targetId(review.getId())
-                        .targetType(TargetType.REVIEW)
+                        .targetId(groupId)
+                        .targetType(TargetType.GROUP)
                         .build();
                 notificationRepository.save(notification);
             }
