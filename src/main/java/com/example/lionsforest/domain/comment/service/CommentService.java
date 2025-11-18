@@ -73,8 +73,8 @@ public class CommentService {
                         .user(part.getUser())
                         .content(content)
                         .photo(photoPath)
-                        .targetId(comment.getCommentId())
-                        .targetType(TargetType.COMMENT)
+                        .targetId(groupId)
+                        .targetType(TargetType.GROUP)
                         .build();
                 notificationRepository.save(notification);
             }
@@ -148,8 +148,8 @@ public class CommentService {
                         .user(author)
                         .content(content)
                         .photo(photoPath)
-                        .targetId(commentId)
-                        .targetType(TargetType.COMMENT)
+                        .targetId(group.getId())
+                        .targetType(TargetType.GROUP)
                         .build();
                 notificationRepository.save(notification);
             }
