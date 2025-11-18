@@ -37,6 +37,9 @@ public enum ErrorCode {
     // 모임 취소 시점 제한
     GROUP_CANCEL_TIME_EXCEEDED(HttpStatus.BAD_REQUEST, "GROUP_CANCEL_TIME_EXCEEDED", "모임 시작 이후에는 취소할 수 없습니다."),
 
+    // 모임 생성 시점 제한
+    GROUP_CREATION_TIME_EXCEEDED(HttpStatus.BAD_REQUEST, "GROUP_CANCEL_TIME_EXCEEDED", "모임 개설은 현재 시각 이후로만 가능합니다."),
+
     // 모임 중복 신청 제한
     PARTICIPATION_ALREADY_EXISTS(HttpStatus.CONFLICT, "PARTICIPATION_ALREADY_EXISTS", "이미 참여 중인 모임입니다."),
 

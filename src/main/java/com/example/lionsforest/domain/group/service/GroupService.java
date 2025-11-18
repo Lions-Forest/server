@@ -49,6 +49,11 @@ public class GroupService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
+        // 모임 시각 검증 - 현재 시각 넘지 않는지
+        if(dto.getMeetingAt().isBefore(LocalDateTime.now())){
+            throw new BusinessException(ErrorCode.GROUP_CREATION_TIME_EXCEEDED);
+        }
+
         // Group Entity 먼저 생성(ID 확보)
         Group group = dto.toEntity(user);
         Group saved = groupRepository.save(group);
