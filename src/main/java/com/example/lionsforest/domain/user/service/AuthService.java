@@ -10,6 +10,8 @@ import com.example.lionsforest.global.component.FirebaseTokenVerifier;
 import com.example.lionsforest.global.component.GoogleOAuthService;
 import com.example.lionsforest.global.component.GoogleTokenVerifier;
 import com.example.lionsforest.global.component.MemberWhitelistValidator;
+import com.example.lionsforest.global.exception.BusinessException;
+import com.example.lionsforest.global.exception.ErrorCode;
 import com.example.lionsforest.global.jwt.JwtTokenProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -35,14 +37,14 @@ public class AuthService {
     private final NicknameService nicknameService;
     private final GoogleOAuthService googleOAuthService;
 
-    @Value("%{google.auth.client-id}")
+    /*@Value("${google.auth.client-id}")
     private String clientId;
 
     @Value("${google.auth.client-secret}")
     private String clientSecret;
 
     @Value("${google.auth.redirect-uri}")
-    private String redirectUri;
+    private String redirectUri;*/
 
     //code를 받아 로그인 처리하는 메소드(메인)
     public LoginResponseDTO loginWithGoogleCode(LoginRequestDTO loginRequestDTO) {
@@ -58,7 +60,7 @@ public class AuthService {
 
         //동아리 부원인지 조회
         if (!whitelistValidator.isMember(name, email)) {
-            throw new SecurityException("동아리 부원 명단에 존재하지 않거나 정보가 일치하지 않습니다.");
+            throw new BusinessException(ErrorCode.USER_NOT_IN_WHITELIST);
         }
 
         //첫 가입인지 확인한 후 로그인 시킴
@@ -72,10 +74,10 @@ public class AuthService {
             user.setNickname(userNickname);
             userRepository.save(user);
             isNewUser = true;
-            System.out.println("새 유저 생성!");
+            log.info("새 유저 생성!");
         } else {
             user = optionalUser.get();
-            System.out.println("이미 존재하는 유저");
+            log.info("이미 존재하는 유저");
         }
 
         // Firebase 커스텀 토큰 생성
@@ -86,7 +88,7 @@ public class AuthService {
             firebaseToken = FirebaseAuth.getInstance().createCustomToken(uid);
         }catch(FirebaseAuthException e){
             log.error("Firebase 커스텀 토큰 생성 실패(User ID: {}): {}", user.getId(), e.getMessage());
-            throw new RuntimeException("Firebase 토큰 생성 중 오류가 발생했습니다.", e);
+            throw new BusinessException(ErrorCode.FIREBASE_TOKEN_CREATION_FAILED);
         }
 
         // JWT 토큰 생성 (반환 타입이 TokenResponse DTO임)

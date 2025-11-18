@@ -1,6 +1,8 @@
 package com.example.lionsforest.global.component;
 
 import com.example.lionsforest.domain.user.dto.request.UserInfoRequestDTO;
+import com.example.lionsforest.global.exception.BusinessException;
+import com.example.lionsforest.global.exception.ErrorCode;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -29,12 +31,12 @@ public class GoogleTokenVerifier {
     public UserInfoRequestDTO verify(String idToken) {
         try {
             if (clientId == null || clientId.isBlank() || clientId.contains("YOUR_GOOGLE_CLIENT_ID")) {
-                throw new IllegalArgumentException("Google Client ID가 application.yml에 설정되지 않았습니다.");
+                throw new BusinessException(ErrorCode.GOOGLE_CLIENT_ID_CONFIG_ERROR);
             }
 
             GoogleIdToken googleIdToken = verifier.verify(idToken);
             if (googleIdToken == null) {
-                throw new SecurityException("유효하지 않은 구글 ID 토큰입니다.");
+                throw new BusinessException(ErrorCode.INVALID_GOOGLE_ID_TOKEN);
             }
 
             GoogleIdToken.Payload payload = googleIdToken.getPayload();
@@ -43,7 +45,7 @@ public class GoogleTokenVerifier {
             String profile_photo = (String) payload.get("picture");
 
             if (email == null || name == null) {
-                throw new SecurityException("구글 토큰에서 이메일 또는 이름 정보를 가져올 수 없습니다.");
+                throw new BusinessException(ErrorCode.GOOGLE_USER_INFO_NOT_FOUND);
             }
 
             return UserInfoRequestDTO.builder()

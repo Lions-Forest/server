@@ -1,5 +1,6 @@
 package com.example.lionsforest.global.component;
 
+import com.example.lionsforest.global.exception.ErrorCode;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -41,7 +42,8 @@ public class MemberWhitelistValidator {
             log.info("Whitelist contents: {}", whitelist);
 
         }catch(IOException e){
-            log.error("Failed to load whitelist", e);
+            log.error("Failed to load whitelist: {}", ErrorCode.WHITELIST_LOAD_FAILED);
+            throw new RuntimeException("Application startup failed due to Whitelist file loading error.", e);
         }
     }
 
