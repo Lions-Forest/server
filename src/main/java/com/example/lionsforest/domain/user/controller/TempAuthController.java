@@ -50,4 +50,9 @@ public class TempAuthController { //프론트 테스트용 임시 컨트롤러
         // 3. 토큰을 JSON 응답으로 반환
         return ResponseEntity.ok(tokens);
     }
+
+    @GetMapping("/api/health")
+    public String health() {
+        return "OK";
+    }
 }

@@ -3,9 +3,13 @@ package com.example.lionsforest.domain.notification.controller;
 import com.example.lionsforest.domain.notification.Notification;
 import com.example.lionsforest.domain.notification.dto.response.NotificationResponseDto;
 import com.example.lionsforest.domain.notification.repository.NotificationRepository;
+import com.example.lionsforest.domain.notification.service.NotificationService;
+import com.example.lionsforest.global.config.PrincipalHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +21,7 @@ import java.util.stream.Collectors;
 @Tag(name = "알림", description = "알림 관련 API")
 public class NotificationController {
     private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
     // 알림 목록 조회
     @GetMapping("{user_id}/")
@@ -48,6 +53,15 @@ public class NotificationController {
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 알림 ID입니다."));
         notification.markRead();  // read 필드를 true로
         notificationRepository.save(notification);
+    }
+
+    // 지도 좋아요 알림 생성
+    @PostMapping("/radar/like/{receiverId}")
+    @Operation(summary = "지도 좋아요 알림 생성", description = "특정 유저의 레이더 상메에 좋아요를 눌렀다는 알림을 생성합니다")
+    public ResponseEntity<NotificationResponseDto> notifyRadarLike(@PathVariable(value = "receiverId") Long receiverId) {
+        Long authenticatedUserId = PrincipalHandler.getUserId();
+        NotificationResponseDto responseDto = notificationService.createRadarLikeNotification(authenticatedUserId, receiverId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
 }
