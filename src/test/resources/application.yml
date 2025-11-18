@@ -1,0 +1,37 @@
+# 테스트 시에만 적용될 설정
+
+spring:
+  # (1) main의 'import' 구문을 덮어씁니다.
+  #     이것으로 존재하지 않는 application-secret.yml을 찾지 않도록 합니다.
+  config:
+    import: "" # 빈 값으로 덮어쓰기
+
+  # (2) 프로필을 'test'로 덮어쓰기
+  profiles:
+    active: test
+
+  # (3) DB 설정을 H2로 덮어쓰기
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+
+  # (4) JPA 설정을 H2용으로 덮어쓰기
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+# (5) 테스트 시 Placeholder 오류 방지를 위한 '가짜' 값 제공
+# (main의 yml과 secret.yml에서 가져올 값들을 여기서 가짜로 제공)
+google:
+  auth:
+    client-id: "test-google-client-id-for-ci"
+
+jwt:
+  secret-key: "dGVzdC1zZWNyZXQtLWtleS1mb3Itam9vbmltLWJhY2tlbmQtcHJvamVjdC1hYmNkZWZn"
+  access-token-validity-in-ms: 1800000
+  refresh-token-validity-in-ms: 604800000
